@@ -1,0 +1,465 @@
+建造者设计模式的写法和好处
+
+NioEventLoopGroup
+    public NioEventLoopGroup() {
+        this(0);
+    }
+    public NioEventLoopGroup(int nThreads) {
+        this(nThreads, (Executor) null);
+    }
+    public NioEventLoopGroup(int nThreads, Executor executor) {
+        this(nThreads, executor, SelectorProvider.provider());
+    }
+    public NioEventLoopGroup(
+            int nThreads, Executor executor, final SelectorProvider selectorProvider) {
+        this(nThreads, executor, selectorProvider, DefaultSelectStrategyFactory.INSTANCE);
+    }
+    public NioEventLoopGroup(int nThreads, Executor executor, final SelectorProvider selectorProvider,
+                             final SelectStrategyFactory selectStrategyFactory) {
+        super(nThreads, executor, selectorProvider, selectStrategyFactory, RejectedExecutionHandlers.reject());
+    }
+
+
+
+MultithreadEventLoopGroup
+    protected MultithreadEventLoopGroup(int nThreads, Executor executor, Object... args) {
+        super(nThreads == 0 ? DEFAULT_EVENT_LOOP_THREADS : nThreads, executor, args);
+    }
+MultithreadEventExecutorGroup
+    private final EventExecutor[] children;
+    private final Set<EventExecutor> readonlyChildren;
+    private final AtomicInteger terminatedChildren = new AtomicInteger();
+    private final Promise<?> terminationFuture = new DefaultPromise(GlobalEventExecutor.INSTANCE);
+    private final EventExecutorChooserFactory.EventExecutorChooser chooser;
+
+    protected MultithreadEventExecutorGroup(int nThreads, Executor executor, Object... args) {
+        this(nThreads, executor, DefaultEventExecutorChooserFactory.INSTANCE, args);
+    }
+    protected MultithreadEventExecutorGroup(int nThreads, Executor executor,
+                                            EventExecutorChooserFactory chooserFactory, Object... args) {
+        if (executor == null) {
+            executor = new ThreadPerTaskExecutor(newDefaultThreadFactory());
+        }
+        children = new EventExecutor[nThreads];
+        for (int i = 0; i < nThreads; i ++) {
+            boolean success = false;
+            try {
+                children[i] = newChild(executor, args);
+                success = true;
+            } catch (Exception e) {
+            } finally {
+            }
+        }
+
+        chooser = chooserFactory.newChooser(children);
+
+        final FutureListener<Object> terminationListener = new FutureListener<Object>() {
+            @Override
+            public void operationComplete(Future<Object> future) throws Exception {
+                if (terminatedChildren.incrementAndGet() == children.length) {
+                    terminationFuture.setSuccess(null);
+                }
+            }
+        };
+
+        for (EventExecutor e: children) {
+            e.terminationFuture().addListener(terminationListener);
+        }
+
+        Set<EventExecutor> childrenSet = new LinkedHashSet<EventExecutor>(children.length);
+        Collections.addAll(childrenSet, children);
+        readonlyChildren = Collections.unmodifiableSet(childrenSet);
+    }
+NioEventLoopGroup
+        protected EventLoop newChild(Executor executor, Object... args) throws Exception {
+            return new NioEventLoop(this, executor, (SelectorProvider) args[0],
+                ((SelectStrategyFactory) args[1]).newSelectStrategy(), (RejectedExecutionHandler) args[2]);
+        }
+DefaultEventExecutorChooserFactory
+        public EventExecutorChooser newChooser(EventExecutor[] executors) {
+            if (isPowerOfTwo(executors.length)) {
+                return new PowerOfTwoEventExecutorChooser(executors);
+            } else {
+                return new GenericEventExecutorChooser(executors);
+            }
+        }
+NioEventLoop
+    private Selector selector;
+    private Selector unwrappedSelector;
+    private SelectedSelectionKeySet selectedKeys;
+
+    private final SelectorProvider provider;
+
+    /**
+     * Boolean that controls determines if a blocked Selector.select should
+     * break out of its selection process. In our case we use a timeout for
+     * the select method and the select method will block for that time unless
+     * waken up.
+     */
+    private final AtomicBoolean wakenUp = new AtomicBoolean();
+
+    private final SelectStrategy selectStrategy;
+
+    private volatile int ioRatio = 50;
+    private int cancelledKeys;
+    private boolean needsToSelectAgain;
+    NioEventLoop(NioEventLoopGroup parent, Executor executor, SelectorProvider selectorProvider,
+                 SelectStrategy strategy, RejectedExecutionHandler rejectedExecutionHandler) {
+        super(parent, executor, false, DEFAULT_MAX_PENDING_TASKS, rejectedExecutionHandler);
+        if (selectorProvider == null) {
+            throw new NullPointerException("selectorProvider");
+        }
+        if (strategy == null) {
+            throw new NullPointerException("selectStrategy");
+        }
+        provider = selectorProvider;
+        final SelectorTuple selectorTuple = openSelector();
+        selector = selectorTuple.selector;
+        unwrappedSelector = selectorTuple.unwrappedSelector;
+        selectStrategy = strategy;
+    }
+ SingleThreadEventLoop
+     private final Queue<Runnable> tailTasks;
+     protected SingleThreadEventLoop(EventLoopGroup parent, Executor executor,
+                                     boolean addTaskWakesUp, int maxPendingTasks,
+                                     RejectedExecutionHandler rejectedExecutionHandler) {
+         super(parent, executor, addTaskWakesUp, maxPendingTasks, rejectedExecutionHandler);
+         tailTasks = newTaskQueue(maxPendingTasks);
+     }
+ SingleThreadEventExecutor
+     private static final int ST_NOT_STARTED = 1;
+     private static final int ST_STARTED = 2;
+     private static final int ST_SHUTTING_DOWN = 3;
+     private static final int ST_SHUTDOWN = 4;
+     private static final int ST_TERMINATED = 5;
+
+     private static final Runnable WAKEUP_TASK = new Runnable() {
+         @Override
+         public void run() {
+             // Do nothing.
+         }
+     };
+     private static final Runnable NOOP_TASK = new Runnable() {
+         @Override
+         public void run() {
+             // Do nothing.
+         }
+     };
+
+     private static final AtomicIntegerFieldUpdater<SingleThreadEventExecutor> STATE_UPDATER =
+             AtomicIntegerFieldUpdater.newUpdater(SingleThreadEventExecutor.class, "state");
+     private static final AtomicReferenceFieldUpdater<SingleThreadEventExecutor, ThreadProperties> PROPERTIES_UPDATER =
+             AtomicReferenceFieldUpdater.newUpdater(
+                     SingleThreadEventExecutor.class, ThreadProperties.class, "threadProperties");
+
+     private final Queue<Runnable> taskQueue;
+
+     private volatile Thread thread;
+     @SuppressWarnings("unused")
+     private volatile ThreadProperties threadProperties;
+     private final Executor executor;
+     private volatile boolean interrupted;
+
+     private final Semaphore threadLock = new Semaphore(0);
+     private final Set<Runnable> shutdownHooks = new LinkedHashSet<Runnable>();
+     private final boolean addTaskWakesUp;
+     private final int maxPendingTasks;
+     private final RejectedExecutionHandler rejectedExecutionHandler;
+
+     private long lastExecutionTime;
+
+     @SuppressWarnings({ "FieldMayBeFinal", "unused" })
+     private volatile int state = ST_NOT_STARTED;
+
+     private volatile long gracefulShutdownQuietPeriod;
+     private volatile long gracefulShutdownTimeout;
+     private long gracefulShutdownStartTime;
+
+     private final Promise<?> terminationFuture = new DefaultPromise<Void>(GlobalEventExecutor.INSTANCE);
+    protected SingleThreadEventExecutor(
+            EventExecutorGroup parent, ThreadFactory threadFactory,
+            boolean addTaskWakesUp, int maxPendingTasks, RejectedExecutionHandler rejectedHandler) {
+        this(parent, new ThreadPerTaskExecutor(threadFactory), addTaskWakesUp, maxPendingTasks, rejectedHandler);
+    }
+    protected SingleThreadEventExecutor(EventExecutorGroup parent, Executor executor,
+                                        boolean addTaskWakesUp, int maxPendingTasks,
+                                        RejectedExecutionHandler rejectedHandler) {
+        super(parent);
+        this.addTaskWakesUp = addTaskWakesUp;
+        this.maxPendingTasks = Math.max(16, maxPendingTasks);
+        this.executor = ObjectUtil.checkNotNull(executor, "executor");
+        taskQueue = newTaskQueue(this.maxPendingTasks);
+        rejectedExecutionHandler = ObjectUtil.checkNotNull(rejectedHandler, "rejectedHandler");
+    }
+再来看final SelectorTuple selectorTuple = openSelector();
+    private SelectorTuple openSelector() {
+        final Selector unwrappedSelector;
+        try {
+            unwrappedSelector = provider.openSelector();
+        } catch (IOException e) {
+            throw new ChannelException("failed to open a new selector", e);
+        }
+
+        if (DISABLE_KEYSET_OPTIMIZATION) {
+            return new SelectorTuple(unwrappedSelector);
+        }
+
+        final SelectedSelectionKeySet selectedKeySet = new SelectedSelectionKeySet();
+
+        Object maybeSelectorImplClass = AccessController.doPrivileged(new PrivilegedAction<Object>() {
+            @Override
+            public Object run() {
+                try {
+                    return Class.forName(
+                            "sun.nio.ch.SelectorImpl",
+                            false,
+                            PlatformDependent.getSystemClassLoader());
+                } catch (Throwable cause) {
+                    return cause;
+                }
+            }
+        });
+
+        if (!(maybeSelectorImplClass instanceof Class) ||
+                // ensure the current selector implementation is what we can instrument.
+                !((Class<?>) maybeSelectorImplClass).isAssignableFrom(unwrappedSelector.getClass())) {
+            if (maybeSelectorImplClass instanceof Throwable) {
+                Throwable t = (Throwable) maybeSelectorImplClass;
+                logger.trace("failed to instrument a special java.util.Set into: {}", unwrappedSelector, t);
+            }
+            return new SelectorTuple(unwrappedSelector);
+        }
+
+        final Class<?> selectorImplClass = (Class<?>) maybeSelectorImplClass;
+
+        Object maybeException = AccessController.doPrivileged(new PrivilegedAction<Object>() {
+            @Override
+            public Object run() {
+                try {
+                    Field selectedKeysField = selectorImplClass.getDeclaredField("selectedKeys");
+                    Field publicSelectedKeysField = selectorImplClass.getDeclaredField("publicSelectedKeys");
+
+                    Throwable cause = ReflectionUtil.trySetAccessible(selectedKeysField, true);
+                    if (cause != null) {
+                        return cause;
+                    }
+                    cause = ReflectionUtil.trySetAccessible(publicSelectedKeysField, true);
+                    if (cause != null) {
+                        return cause;
+                    }
+
+                    selectedKeysField.set(unwrappedSelector, selectedKeySet);
+                    publicSelectedKeysField.set(unwrappedSelector, selectedKeySet);
+                    return null;
+                } catch (NoSuchFieldException e) {
+                    return e;
+                } catch (IllegalAccessException e) {
+                    return e;
+                }
+            }
+        });
+
+        if (maybeException instanceof Exception) {
+            selectedKeys = null;
+            Exception e = (Exception) maybeException;
+            logger.trace("failed to instrument a special java.util.Set into: {}", unwrappedSelector, e);
+            return new SelectorTuple(unwrappedSelector);
+        }
+        selectedKeys = selectedKeySet;
+        logger.trace("instrumented a special java.util.Set into: {}", unwrappedSelector);
+        return new SelectorTuple(unwrappedSelector,
+                                 new SelectedSelectionKeySetSelector(unwrappedSelector, selectedKeySet));
+    }
+
+ServerBootstrap
+    private final Map<ChannelOption<?>, Object> childOptions = new LinkedHashMap<ChannelOption<?>, Object>();
+    private final Map<AttributeKey<?>, Object> childAttrs = new LinkedHashMap<AttributeKey<?>, Object>();
+    private final ServerBootstrapConfig config = new ServerBootstrapConfig(this);
+    private volatile EventLoopGroup childGroup;
+    private volatile ChannelHandler childHandler;
+    public ServerBootstrap group(EventLoopGroup parentGroup, EventLoopGroup childGroup) {
+        super.group(parentGroup);
+        if (childGroup == null) {
+            throw new NullPointerException("childGroup");
+        }
+        if (this.childGroup != null) {
+            throw new IllegalStateException("childGroup set already");
+        }
+        this.childGroup = childGroup;
+        return this;
+    }
+    public ServerBootstrap childHandler(ChannelHandler childHandler) {
+        if (childHandler == null) {
+            throw new NullPointerException("childHandler");
+        }
+        this.childHandler = childHandler;
+        return this;
+    }
+    //channel为我们自己设置的NioServerSocketChannel
+         void init(Channel channel) throws Exception {
+             final Map<ChannelOption<?>, Object> options = options0();
+             synchronized (options) {
+                 setChannelOptions(channel, options, logger);
+             }
+
+             final Map<AttributeKey<?>, Object> attrs = attrs0();
+             synchronized (attrs) {
+                 for (Entry<AttributeKey<?>, Object> e: attrs.entrySet()) {
+                     @SuppressWarnings("unchecked")
+                     AttributeKey<Object> key = (AttributeKey<Object>) e.getKey();
+                     channel.attr(key).set(e.getValue());
+                 }
+             }
+
+            //pipeline是什么东西DefaultChannelPipeline
+             ChannelPipeline p = channel.pipeline();
+
+             final EventLoopGroup currentChildGroup = childGroup;
+             final ChannelHandler currentChildHandler = childHandler;
+             final Entry<ChannelOption<?>, Object>[] currentChildOptions;
+             final Entry<AttributeKey<?>, Object>[] currentChildAttrs;
+             synchronized (childOptions) {
+                 currentChildOptions = childOptions.entrySet().toArray(newOptionArray(childOptions.size()));
+             }
+             synchronized (childAttrs) {
+                 currentChildAttrs = childAttrs.entrySet().toArray(newAttrArray(childAttrs.size()));
+             }
+
+             p.addLast(new ChannelInitializer<Channel>() {
+                 @Override
+                 public void initChannel(final Channel ch) throws Exception {
+                     final ChannelPipeline pipeline = ch.pipeline();
+                     ChannelHandler handler = config.handler();
+                     if (handler != null) {
+                         pipeline.addLast(handler);
+                     }
+
+                     ch.eventLoop().execute(new Runnable() {
+                         @Override
+                         public void run() {
+                             pipeline.addLast(new ServerBootstrapAcceptor(
+                                     ch, currentChildGroup, currentChildHandler, currentChildOptions, currentChildAttrs));
+                         }
+                     });
+                 }
+             });
+         }
+
+
+
+AbstractBootstrap
+    volatile EventLoopGroup group;
+    @SuppressWarnings("deprecation")
+    private volatile ChannelFactory<? extends C> channelFactory;
+    private volatile SocketAddress localAddress;
+    private final Map<ChannelOption<?>, Object> options = new LinkedHashMap<ChannelOption<?>, Object>();
+    private final Map<AttributeKey<?>, Object> attrs = new LinkedHashMap<AttributeKey<?>, Object>();
+    private volatile ChannelHandler handler;
+    AbstractBootstrap(AbstractBootstrap<B, C> bootstrap) {
+        group = bootstrap.group;
+        channelFactory = bootstrap.channelFactory;
+        handler = bootstrap.handler;
+        localAddress = bootstrap.localAddress;
+        synchronized (bootstrap.options) {
+            options.putAll(bootstrap.options);
+        }
+        synchronized (bootstrap.attrs) {
+            attrs.putAll(bootstrap.attrs);
+        }
+    }
+
+    public B channel(Class<? extends C> channelClass) {
+        if (channelClass == null) {
+            throw new NullPointerException("channelClass");
+        }
+        return channelFactory(new ReflectiveChannelFactory<C>(channelClass));
+    }
+    public ChannelFuture bind(int inetPort) {
+        return bind(new InetSocketAddress(inetPort));
+    }
+    public ChannelFuture bind(SocketAddress localAddress) {
+        validate();
+        if (localAddress == null) {
+            throw new NullPointerException("localAddress");
+        }
+        return doBind(localAddress);
+    }
+    private ChannelFuture doBind(final SocketAddress localAddress) {
+        final ChannelFuture regFuture = initAndRegister();
+        final Channel channel = regFuture.channel();
+        if (regFuture.cause() != null) {
+            return regFuture;
+        }
+
+        if (regFuture.isDone()) {
+            // At this point we know that the registration was complete and successful.
+            ChannelPromise promise = channel.newPromise();
+            doBind0(regFuture, channel, localAddress, promise);
+            return promise;
+        } else {
+            // Registration future is almost always fulfilled already, but just in case it's not.
+            final PendingRegistrationPromise promise = new PendingRegistrationPromise(channel);
+            regFuture.addListener(new ChannelFutureListener() {
+                @Override
+                public void operationComplete(ChannelFuture future) throws Exception {
+                    Throwable cause = future.cause();
+                    if (cause != null) {
+                        // Registration on the EventLoop failed so fail the ChannelPromise directly to not cause an
+                        // IllegalStateException once we try to access the EventLoop of the Channel.
+                        promise.setFailure(cause);
+                    } else {
+                        // Registration was successful, so set the correct executor to use.
+                        // See https://github.com/netty/netty/issues/2586
+                        promise.registered();
+
+                        doBind0(regFuture, channel, localAddress, promise);
+                    }
+                }
+            });
+            return promise;
+        }
+    }
+    //先开始分析initAndRegister()方法
+    final ChannelFuture initAndRegister() {
+        Channel channel = null;
+        try {
+            //ReflectiveChannelFactory之前初始化的时候设置的工厂
+            channel = channelFactory.newChannel();
+            init(channel);
+        } catch (Throwable t) {
+            if (channel != null) {
+                // channel can be null if newChannel crashed (eg SocketException("too many open files"))
+                channel.unsafe().closeForcibly();
+                // as the Channel is not registered yet we need to force the usage of the GlobalEventExecutor
+                return new DefaultChannelPromise(channel, GlobalEventExecutor.INSTANCE).setFailure(t);
+            }
+            // as the Channel is not registered yet we need to force the usage of the GlobalEventExecutor
+            return new DefaultChannelPromise(new FailedChannel(), GlobalEventExecutor.INSTANCE).setFailure(t);
+        }
+
+        ChannelFuture regFuture = config().group().register(channel);
+        if (regFuture.cause() != null) {
+            if (channel.isRegistered()) {
+                channel.close();
+            } else {
+                channel.unsafe().closeForcibly();
+            }
+        }
+
+        // If we are here and the promise is not failed, it's one of the following cases:
+        // 1) If we attempted registration from the event loop, the registration has been completed at this point.
+        //    i.e. It's safe to attempt bind() or connect() now because the channel has been registered.
+        // 2) If we attempted registration from the other thread, the registration request has been successfully
+        //    added to the event loop's task queue for later execution.
+        //    i.e. It's safe to attempt bind() or connect() now:
+        //         because bind() or connect() will be executed *after* the scheduled registration task is executed
+        //         because register(), bind(), and connect() are all bound to the same thread.
+
+        return regFuture;
+    }
+
+
+
+
+
+
