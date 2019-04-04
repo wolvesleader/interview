@@ -1,0 +1,9 @@
+hashmap问题
+    1.hashmap存在的问题演示，举一个例子即可,例如多条线程put数据回出现死循环，例如 多线程put的时候可能导致元素丢失
+    2.使用工具定位问题代码
+    3.结合源码分析存在问题的原因
+解决方案
+      1.使用hashtable替换hashmap
+      2.分析不使用Collections解决hashmap的原因
+      3.分析jdk1.7以前CurrentHashMap是怎么解决hashmap的问题
+      4.分析jdk1.8之后CurrentHashMap是怎么解决hashmap的问题

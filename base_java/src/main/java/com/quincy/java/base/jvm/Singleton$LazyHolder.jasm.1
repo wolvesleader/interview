@@ -1,0 +1,33 @@
+
+super class Singleton$LazyHolder
+	version 52:0
+{
+
+static final Field INSTANCE:"LSingleton;";
+
+private Method "<init>":"()V"
+	stack 1 locals 1
+{
+		aload_0;
+		invokespecial	Method java/lang/Object."<init>":"()V";
+		return;
+}
+
+static Method "<clinit>":"()V"
+	stack 3 locals 0
+{
+		new	class Singleton;
+		dup;
+		aconst_null;
+		invokespecial	Method Singleton."<init>":"(LSingleton$1;)V";
+		putstatic	Field INSTANCE:"LSingleton;";
+		getstatic	Field java/lang/System.out:"Ljava/io/PrintStream;";
+		ldc	String "LazyHolder.<clinit>";
+		invokevirtual	Method java/io/PrintStream.println:"(Ljava/lang/String;)V";
+		return;
+}
+
+private static InnerClass LazyHolder=class Singleton$LazyHolder of class Singleton;
+static synthetic InnerClass class Singleton$1;
+
+} // end Class Singleton$LazyHolder

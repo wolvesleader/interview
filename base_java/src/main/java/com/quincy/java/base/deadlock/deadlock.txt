@@ -1,0 +1,16 @@
+死锁产生的原因
+两段不同的逻辑都在等待对方的锁释放才能执行下去，这个时候就产生了死锁
+死锁的查找
+使用JConsole工具来查找死锁
+死锁的解决
+1.使用ReentrantLock锁来解决
+2.调整锁的顺序
+
+int Integer BigInteger AtomicInteger
+
+java 锁的分类   valatile,synchronized,CAS
+
+Lock和synchronized锁的区别
+1，Lock使用起来比较灵活，但是必须有释放锁的动作
+2，Lock必须手动释放和开启锁，synchronized 不需要
+3，Lock只适用与代码块锁，而synchronized 对象之间的互斥关系

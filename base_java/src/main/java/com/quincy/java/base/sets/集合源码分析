@@ -1,0 +1,54 @@
+集合源码分析包
+
+    //底层存储数据的方法
+    final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
+                   boolean evict) {
+        Node<K,V>[] tab; Node<K,V> p; int n, i;
+        判断tab为空或者tab长度为0，说明没有存入任何数据或者没有创建链表
+        if ((tab = table) == null || (n = tab.length) == 0)
+            n = (tab = resize()).length;
+            //把建的hash值作为数组的索引在tab数组中查找，是否存在这个数据
+        if ((p = tab[i = (n - 1) & hash]) == null)
+            //不存在创建一个节点挂在在tab集合中
+            tab[i] = newNode(hash, key, value, null);
+        else {//tab数组中存在该元素的逻辑处理
+            Node<K,V> e; K k;
+            //若tab数组中有元素且该元素的hash值与新增的key.hash相同则e=p
+            //说明存入了相同的值,保证集合中的数据唯一性
+            if (p.hash == hash &&
+                ((k = p.key) == key || (key != null && key.equals(k))))
+                e = p;
+            //存入的数据是二叉树结构的数据，这里不做考虑
+            else if (p instanceof TreeNode)
+                e = ((TreeNode<K,V>)p).putTreeVal(this, tab, hash, key, value);
+            else {
+
+                for (int binCount = 0; ; ++binCount) {//找到链表的尾节点
+                    if ((e = p.next) == null) {
+                        p.next = newNode(hash, key, value, null);
+                        //链表转换尾二叉树性，不做考虑
+                        if (binCount >= TREEIFY_THRESHOLD - 1) // -1 for 1st
+                            treeifyBin(tab, hash);
+                        break;
+                    }
+                    ////若链表中的某一节点hash和key与新增元素的key.hash以及key相同break
+                    if (e.hash == hash &&
+                        ((k = e.key) == key || (key != null && key.equals(k))))
+                        break;
+                    p = e;
+                }
+            }
+            if (e != null) { // existing mapping for key
+                V oldValue = e.value;
+                if (!onlyIfAbsent || oldValue == null)
+                    e.value = value;
+                afterNodeAccess(e);
+                return oldValue;
+            }
+        }
+        ++modCount;
+        if (++size > threshold)
+            resize();
+        afterNodeInsertion(evict);
+        return null;
+    }

@@ -1,0 +1,138 @@
+CAS算法是硬件对并发操作数据共享的支持
+
+预估值(旧值)
+
+CAS算法提高效率的原因：不会放弃CPU执行权，不然CPU之间需要切换，需要耗费时间
+
+
+
+synchronized实现锁的原理
+如果加在方法上
+不过相对于普通方法，其常量池中多了ACC_SYNCHRONIZED标示符。JVM就是根据该标示符来实现方法的同步的：
+当方法调用时，调用指令将会检查方法的 ACC_SYNCHRONIZED 访问标志是否被设置，如果设置了，
+执行线程将先获取monitor，获取成功之后才能执行方法体，方法执行完后再释放monitor。
+在方法执行期间，其他任何线程都无法再获得同一个monitor对象。
+ 其实本质上没有区别，只是方法的同步是一种隐式的方式来实现，无需通过字节码来完成。
+
+加在同步代码块中
+每个对象有一个监视器锁（monitor）。当monitor被占用时就会处于锁定状态，线程执行monitorenter指令时尝试获取monitor的所有权
+
+结合AtomicInteger分析CAS算法
+可以参考https://www.jianshu.com/p/fb6e91b013cc这一片帖子
+
+下面以AtomicInteger的实现为例，分析一下CAS是如何实现的。
+public class AtomicInteger extends Number implements java.io.Serializable {
+    // setup to use Unsafe.compareAndSwapInt for updates
+    private static final Unsafe unsafe = Unsafe.getUnsafe();
+    private static final long valueOffset;
+    static {
+        try {
+            valueOffset = unsafe.objectFieldOffset
+                (AtomicInteger.class.getDeclaredField("value"));
+        } catch (Exception ex) { throw new Error(ex); }
+    }
+
+    private volatile int value;
+    public final int get() {return value;}
+}
+1，Unsafe，是CAS的核心类，由于Java方法无法直接访问底层系统，需要通过本地（native）方法来访问，Unsafe相当于一个后门，
+基于该类可以直接操作特定内存的数据。
+2，变量valueOffset，表示该变量值在内存中的偏移地址，因为Unsafe就是根据内存偏移地址获取数据的。
+3，变量value用volatile修饰，保证了多线程之间的内存可见性。
+
+看看AtomicInteger如何实现并发下的累加操作：
+public final int getAndAdd(int delta) {
+    return unsafe.getAndAddInt(this, valueOffset, delta);
+}
+
+//unsafe.getAndAddInt
+public final int getAndAddInt(Object var1, long var2, int var4) {
+    int var5;
+    do {
+        var5 = this.getIntVolatile(var1, var2);
+    } while(!this.compareAndSwapInt(var1, var2, var5, var5 + var4));
+    return var5;
+}
+
+假设线程A和线程B同时执行getAndAdd操作（分别跑在不同CPU上）：
+
+1，AtomicInteger里面的value原始值为3，即主内存中AtomicInteger的value为3，根据Java内存模型，线程A和线程B各自持有一份value的副本，值为3。
+2，线程A通过getIntVolatile(var1, var2)拿到value值3，这时线程A被挂起。
+3，线程B也通过getIntVolatile(var1, var2)方法获取到value值3，运气好，线程B没有被挂起，并执行compareAndSwapInt方法比较内存值也为3，成功修改内存值为2。
+4，这时线程A恢复，执行compareAndSwapInt方法比较，发现自己手里的值(3)和内存的值(2)不一致，说明该值已经被其它线程提前修改过了，那只能重新来一遍了。
+5，重新获取value值，因为变量value被volatile修饰，所以其它线程对它的修改，线程A总是能够看到，线程A继续执行compareAndSwapInt进行比较替换，直到成功。
+
+整个过程中，利用CAS保证了对于value的修改的并发安全，继续深入看看Unsafe类中的compareAndSwapInt方法实现。
+
+public final native boolean compareAndSwapInt(Object paramObject, long paramLong, int paramInt1, int paramInt2);
+
+Unsafe类中的compareAndSwapInt，是一个本地方法，该方法的实现位于unsafe.cpp中
+
+UNSAFE_ENTRY(jboolean, Unsafe_CompareAndSwapInt(JNIEnv *env, jobject unsafe, jobject obj, jlong offset, jint e, jint x))
+  UnsafeWrapper("Unsafe_CompareAndSwapInt");
+  oop p = JNIHandles::resolve(obj);
+  jint* addr = (jint *) index_oop_from_field_offset_long(p, offset);
+  return (jint)(Atomic::cmpxchg(x, addr, e)) == e;
+UNSAFE_END
+
+1，先想办法拿到变量value在内存中的地址。
+2，通过Atomic::cmpxchg实现比较替换，其中参数x是即将更新的值，参数e是原内存的值。
+如果是Linux的x86，Atomic::cmpxchg方法的实现如下：
+inline jint Atomic::cmpxchg (jint exchange_value, volatile jint* dest, jint compare_value) {
+  int mp = os::is_MP();
+  __asm__ volatile (LOCK_IF_MP(%4) "cmpxchgl %1,(%3)"
+                    : "=a" (exchange_value)
+                    : "r" (exchange_value), "a" (compare_value), "r" (dest), "r" (mp)
+                    : "cc", "memory");
+  return exchange_value;
+}
+
+__asm__表示汇编的开始
+volatile表示禁止编译器优化
+LOCK_IF_MP是个内联函数
+
+#define LOCK_IF_MP(mp) "cmp $0, " #mp "; je 1f; lock; 1: "
+
+Window的x86实现如下：
+
+inline jint Atomic::cmpxchg (jint exchange_value, volatile jint* dest, jint compare_value) {
+    int mp = os::isMP(); //判断是否是多处理器
+    _asm {
+        mov edx, dest
+        mov ecx, exchange_value
+        mov eax, compare_value
+        LOCK_IF_MP(mp)
+        cmpxchg dword ptr [edx], ecx
+    }
+}
+
+// Adding a lock prefix to an instruction on MP machine
+// VC++ doesn't like the lock prefix to be on a single line
+// so we can't insert a label after the lock prefix.
+// By emitting a lock prefix, we can define a label after it.
+#define LOCK_IF_MP(mp) __asm cmp mp, 0  \
+                       __asm je L0      \
+                       __asm _emit 0xF0 \
+                       __asm L0:
+
+
+
+LOCK_IF_MP根据当前系统是否为多核处理器决定是否为cmpxchg指令添加lock前缀。
+
+如果是多处理器，为cmpxchg指令添加lock前缀。
+反之，就省略lock前缀。（单处理器会不需要lock前缀提供的内存屏障效果）
+intel手册对lock前缀的说明如下：
+确保后续指令执行的原子性。
+1，在Pentium及之前的处理器中，带有lock前缀的指令在执行期间会锁住总线，使得其它处理器暂时无法通过总线访问内存，很显然，这个开销很大。
+在新的处理器中，Intel使用缓存锁定来保证指令执行的原子性，缓存锁定将大大降低lock前缀指令的执行开销。
+2，禁止该指令与前面和后面的读写指令重排序。
+3，把写缓冲区的所有数据刷新到内存中。
+上面的第2点和第3点所具有的内存屏障效果，保证了CAS同时具有volatile读和volatile写的内存语义。
+
+CAS缺点
+1.CAS存在一个很明显的问题，即ABA问题。
+问题：如果变量V初次读取的时候是A，并且在准备赋值的时候检查到它仍然是A，那能说明它的值没有被其他线程修改过了吗？
+如果在这段期间曾经被改成B，然后又改回A，那CAS操作就会误认为它从来没有被修改过。针对这种情况，java并发包中提供了一个带有标记的原子引用类AtomicStampedReference，它可以通过控制变量值的版本来保证CAS的正确性。
+2.CPU开销大，需要不断的执行轮训
+3.只能保证单一变量的原子性，不能保证代码块原子性
+
