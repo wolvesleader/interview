@@ -1,7 +1,7 @@
 package com.quincy.java.algorithm;
 
 /**
- * 比特类型的数组实现
+ * byte类型的数组实现
  * author:quincy
  * Date:2019-03-17
  */
