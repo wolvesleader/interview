@@ -11,6 +11,7 @@ public class ThreadCreateOneDriver {
         //Thread th = new Thread();
 
         ThreadCreateOneDemo threadCreateOneDemo = new ThreadCreateOneDemo();
+
         threadCreateOneDemo.start();
     }
 }
