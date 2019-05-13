@@ -53,7 +53,24 @@
       <version>8.1.15.v20140411</version>
     </dependency>
 
-
+    <!--RedisBloomFilter所需要的jar包开始-->
+    <dependency>
+      <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-redis</artifactId>
+      <version>1.7.1.RELEASE</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>4.2.5.RELEASE</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>27.0.1-jre</version>
+      <scope>compile</scope>
+    </dependency>
+    <!--RedisBloomFilter所需要的jar包结束-->
 
 
 
