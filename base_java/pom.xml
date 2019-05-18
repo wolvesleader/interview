@@ -73,6 +73,13 @@
     <!--RedisBloomFilter所需要的jar包结束-->
 
 
+    <!-- https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp -->
+    <dependency>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>okhttp</artifactId>
+      <version>3.14.0</version>
+    </dependency>
+
 
   </dependencies>
 

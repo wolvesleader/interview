@@ -32,7 +32,7 @@ public class BubbleSort {
                 }
             }
         }
-        printArray(arr);
+        //printArray(arr);
     }
 
     /**
