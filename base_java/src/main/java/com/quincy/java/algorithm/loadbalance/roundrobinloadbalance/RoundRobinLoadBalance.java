@@ -83,7 +83,7 @@ public class RoundRobinLoadBalance {
         //获取权重
         int weight = invoker.getWeight();
         if (weight > 0) {
-            //dubbo运行时间
+            //dubbo运行时间,dubbo第一次发布的时间
             long timestamp = invoker.getTimestamp();
             if (timestamp > 0L) {
                 int uptime = (int) (System.currentTimeMillis() - timestamp);
@@ -96,6 +96,7 @@ public class RoundRobinLoadBalance {
         }
         return weight;
     }
+    //处于预热期的提供者，权重降级
     static int calculateWarmupWeight(int uptime, int warmup, int weight) {
         int ww = (int) ((float) uptime / ((float) warmup / (float) weight));
         return ww < 1 ? 1 : (ww > weight ? weight : ww);
