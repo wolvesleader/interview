@@ -2,7 +2,6 @@ package com.quincy.java.base.threadpool;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * Created by quincy on 18/1/6.
@@ -13,6 +12,8 @@ public class MyThreadPoolExecutorDriver {
 
       // ThreadPoolExecutor  threadPoolExecutor = Executors.newSingleThreadExecutor();
         ExecutorService executorService = Executors.newCachedThreadPool();
+
+
 
         // Executors.newFixedThreadPool();
       //  Executors.newScheduledThreadPool(12);

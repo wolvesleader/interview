@@ -49,7 +49,9 @@ public class IdeaDebug {
         for (String str: lists) {
             stringBuffer.append(str).append(" ");
         }
-        return stringBuffer.toString();
+        //return stringBuffer.toString();
+
+        return null;
     }
 
 

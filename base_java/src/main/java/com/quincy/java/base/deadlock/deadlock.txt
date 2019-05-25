@@ -10,6 +10,7 @@ int Integer BigInteger AtomicInteger
 
 java 锁的分类   valatile,synchronized,CAS
 
+
 Lock和synchronized锁的区别
 1，Lock使用起来比较灵活，但是必须有释放锁的动作
 2，Lock必须手动释放和开启锁，synchronized 不需要

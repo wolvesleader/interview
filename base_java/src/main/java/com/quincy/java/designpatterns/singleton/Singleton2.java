@@ -12,6 +12,7 @@ public class Singleton2 {
 
     public static  Singleton2 getSingleTon(){
 
+        //dd
         if( s == null){
             //位置1
             synchronized (Singleton2. class) {
