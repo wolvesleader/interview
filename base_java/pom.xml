@@ -25,12 +25,26 @@
       <version>4.11</version>
       <scope>test</scope>
     </dependency>
+
+    <!--netty所需要的jar包开始-->
+    <!-- https://mvnrepository.com/artifact/com.esotericsoftware/kryo -->
+    <dependency>
+      <groupId>com.esotericsoftware</groupId>
+      <artifactId>kryo</artifactId>
+      <version>4.0.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.esotericsoftware</groupId>
+      <artifactId>kryo-shaded</artifactId>
+      <version>4.0.2</version>
+    </dependency>
     <!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-all</artifactId>
       <version>4.1.25.Final</version>
     </dependency>
+    <!--netty所需要的jar包结束-->
 
     <dependency>
       <groupId>cglib</groupId>
@@ -45,7 +59,6 @@
       <version>3.3.1</version>
     </dependency>
 
-    <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-server -->
     <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-server -->
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
@@ -72,13 +85,6 @@
     </dependency>
     <!--RedisBloomFilter所需要的jar包结束-->
 
-
-    <!-- https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp -->
-    <!--<dependency>
-      <groupId>com.squareup.okhttp3</groupId>
-      <artifactId>okhttp</artifactId>
-      <version>3.14.0</version>
-    </dependency>-->
 
 
   </dependencies>

@@ -17,6 +17,10 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
         account.setAccountId("10000");
         account.setAccountPwd("123456");
         ctx.writeAndFlush(account);
+        Account account2 = new Account();
+        account2.setAccountId("9999");
+        account2.setAccountPwd("111");
+        ctx.writeAndFlush(account2);
         //System.out.println("client send message:"+account);
     }
 

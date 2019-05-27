@@ -24,9 +24,6 @@ public class AccountMessageEncoder extends MessageToByteEncoder<Account> {
         objectOutputStream.writeObject(account);
         byte[] bytes = byteArrayOutputStream.toByteArray();
 
-
-        //ByteBuf buffer = channelHandlerContext.alloc().buffer();
-
         int dataLength = bytes.length;
         byteBuf.writeInt(dataLength);
         byteBuf.writeBytes(bytes);
