@@ -86,6 +86,13 @@
     <!--RedisBloomFilter所需要的jar包结束-->
 
 
+    <!-- disruptor使用到的jar包 -->
+    <dependency>
+      <groupId>com.lmax</groupId>
+      <artifactId>disruptor</artifactId>
+      <version>3.3.7</version>
+    </dependency>
+
 
   </dependencies>
 
