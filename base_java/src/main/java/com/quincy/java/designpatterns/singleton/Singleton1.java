@@ -13,4 +13,7 @@ public class Singleton1 {
     public static Singleton1 getSingleton1(){
         return singleton1;
     }
+
+
+
 }
