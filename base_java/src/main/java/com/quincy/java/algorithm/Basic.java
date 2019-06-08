@@ -1,7 +1,7 @@
 package com.quincy.java.algorithm;
 
 
-import com.quincy.java.algorithm.pojo.ListNode;
+import java.util.regex.Pattern;
 
 /**
  * Created by quincy on 18/4/15.
@@ -9,13 +9,43 @@ import com.quincy.java.algorithm.pojo.ListNode;
 public class Basic {
     public static void main(String[] args) {
 
-        int endZeroCount = factorialEndZeroCount(10);
-        System.out.println(endZeroCount);
 
-
-
-
+        System.out.println(ip2Long("   "));
+        //System.out.println(checkIP("192.168.31.259"));
     }
+
+    /**
+     * ip地址转换为32位long类型数字
+     * 192.168.31.25
+     *
+     * @param ipAddress
+     * @return
+     */
+    public static Long ip2Long(String ipAddress){
+        if (ipAddress == null || !checkIP(ipAddress)){
+           throw  new RuntimeException("ip地址不合法");
+        }
+        String[] split = ipAddress.split("\\.");
+        long a =  Long.parseLong(split[0]) << 24;
+        long b = Long.parseLong(split[1]) << 16;
+        long c = Long.parseLong(split[2]) << 8;
+        long d = Long.parseLong(split[3]);
+
+        return ( a + b + c + d );
+    }
+
+    /**
+     * 检测IP地址是否合法
+     * @param ipAddress
+     * @return
+     */
+    private static boolean checkIP(String ipAddress) {
+        Pattern pattern = Pattern
+                .compile("^((\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5]"
+                        + "|[*])\\.){3}(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5]|[*])$");
+        return pattern.matcher(ipAddress).matches();
+    }
+
 
 
     /**
@@ -30,6 +60,11 @@ public class Basic {
         return count;
     }
 
+    /**
+     *
+     * @param n
+     * @return
+     */
     public static Long factorial(int n){
 
         if(n < 1 || n > 1000){
@@ -59,13 +94,13 @@ public class Basic {
         System.out.println((isNegative? "-": "")+sb.reverse());
     }
 
-    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
 
-
-        return null;
-    }
-
-
+    /**
+     * 折纸次数
+     * @param n
+     * @param count
+     * @return
+     */
     public static int f(int n, int count) {
         if (n <= 88480000) {
             System.out.println("结束");
@@ -77,6 +112,10 @@ public class Basic {
     }
 
 
+    /**
+     * 判断一个数字是否为素数
+     * @param number
+     */
     public static void isPrime(int number) {
 
         for (int i = 2; i <= Math.sqrt(number); i++) {
