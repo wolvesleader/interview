@@ -37,8 +37,6 @@ public class IsPalindromeList {
             fast = fast.next.next;
         }
         Stack<Node> nodes = new Stack<>();
-
-
         return true;
     }
 

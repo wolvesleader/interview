@@ -1,4 +1,4 @@
-package com.quincy.java.algorithm;
+package com.quincy.java.algorithm.sort;
 
 import java.util.Arrays;
 

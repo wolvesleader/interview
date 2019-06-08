@@ -1,4 +1,4 @@
-package com.quincy.java.algorithm;
+package com.quincy.java.algorithm.sort;
 
 /**
  * Created by quincy on 18/5/13.

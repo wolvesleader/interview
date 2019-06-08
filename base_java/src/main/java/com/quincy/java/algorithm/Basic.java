@@ -1,13 +1,12 @@
 package com.quincy.java.algorithm;
 
-import com.quincy.java.algorithm.pojo.ListNode;
 
-import java.util.Scanner;
+import com.quincy.java.algorithm.pojo.ListNode;
 
 /**
  * Created by quincy on 18/4/15.
  */
-public class Demo {
+public class Basic {
     public static void main(String[] args) {
 
         int endZeroCount = factorialEndZeroCount(10);
