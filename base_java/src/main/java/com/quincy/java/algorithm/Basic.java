@@ -8,8 +8,6 @@ import java.util.regex.Pattern;
  */
 public class Basic {
     public static void main(String[] args) {
-
-
         System.out.println(ip2Long("   "));
         //System.out.println(checkIP("192.168.31.259"));
     }
@@ -30,7 +28,6 @@ public class Basic {
         long b = Long.parseLong(split[1]) << 16;
         long c = Long.parseLong(split[2]) << 8;
         long d = Long.parseLong(split[3]);
-
         return ( a + b + c + d );
     }
 
