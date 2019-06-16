@@ -5,6 +5,7 @@ package com.quincy.java.designpatterns.decorator;
  * 装饰者设计模式主要是对原有类的增强
  * 应为在开发中有的时候我们不能修改原有类的代码，
  * 只能通过增强的方式来实现
+ * 装饰者模式和动态代理模式的区别
  */
 public class UserService {
 
