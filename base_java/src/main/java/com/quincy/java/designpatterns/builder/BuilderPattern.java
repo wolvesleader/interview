@@ -12,7 +12,11 @@ public class BuilderPattern {
     public static void main(String[] args) {
         User user = new User.Builder().addId("1002").addSex("男").addUsername("大熊").build();
         System.out.println(user.getId());
+
+
     }
+
+
 
 
 }
