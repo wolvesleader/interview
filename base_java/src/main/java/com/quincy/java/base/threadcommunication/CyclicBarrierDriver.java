@@ -13,6 +13,7 @@ public class CyclicBarrierDriver {
     //上课
     public void clazz(CyclicBarrier cyclicBarrier){
         System.out.println(Thread.currentThread().getName() + " 来上课啦");
+
         try {
             cyclicBarrier.await();
         } catch (InterruptedException e) {

@@ -2,6 +2,9 @@ package com.quincy.java.designpatterns.singleton;
 
 /**
  * Created by quincy on 2018/12/20.
+ * java -XX:+UnlockDiagnosticVMOptions -XX:+PrintAssembly -XX:CompileCommand=compileonly,*TestVolatile1.getInstance TestVolatile1
+ *
+ * java -XX:+UnlockDiagnosticVMOptions -XX:+PrintAssembly -XX:CompileCommand=print,*TestVolatile1.getInstance  TestVolatile1
  */
 public class Singleton2 {
     private Singleton2(){
