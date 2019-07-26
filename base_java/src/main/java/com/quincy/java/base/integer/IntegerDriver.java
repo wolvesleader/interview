@@ -5,6 +5,7 @@ package com.quincy.java.base.integer;
  * Date:2019-07-26
  */
 public class IntegerDriver {
+
     public static void main(String[] args) {
         Integer i1 = new Integer(127);
         Integer i2 = new Integer(127);
