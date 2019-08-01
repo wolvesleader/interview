@@ -11,9 +11,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Date:2019-08-01
  */
 public class ArrayListDriver {
-    public static void main(String[] args) {
-
-    }
+    public static void main(String[] args) {}
 
 
     private void arraylistTest(){
