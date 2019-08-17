@@ -14,6 +14,7 @@ import java.util.Set;
  * Created by quincy on 2018/6/20.
  * 没有提供客户端程序
  * 测试可以使用 telnet localhost 9999 命令开启多个窗口
+ *NIO+Reactor(单线程模式)反应堆
  */
 public class ServerScoket {
 
@@ -24,21 +25,22 @@ public class ServerScoket {
             ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.socket().bind(new InetSocketAddress(9999));
             serverSocketChannel.configureBlocking(false);
-
-
             selector = Selector.open();
-
+            //注册连接事件
             serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * Reactor(单线程模式)反应堆
+     */
     public void listen(){
 
         while (true){
             try {
+                //如果没有任何事件进入会阻塞在这里
                 selector.select();
                 Set<SelectionKey> selectionKeys = selector.selectedKeys();
                 Iterator<SelectionKey> iterator = selectionKeys.iterator();
@@ -53,6 +55,10 @@ public class ServerScoket {
         }
     }
 
+    /**
+     * 分发器==dispatch
+     * @param selectionKey
+     */
     public void handlerKey(SelectionKey selectionKey){
 
        if(selectionKey.isAcceptable()){
@@ -62,12 +68,12 @@ public class ServerScoket {
                e.printStackTrace();
            }
        }else if(selectionKey.isReadable()){
-
            try {
                handelerRead(selectionKey);
            } catch (IOException e) {
                e.printStackTrace();
            }
+
        }else if(selectionKey.isWritable()){
 
        }
@@ -87,12 +93,12 @@ public class ServerScoket {
         SocketChannel channel = server.accept();
         // 设置成非阻塞
         channel.configureBlocking(false);
-
         // 在这里可以给客户端发送信息哦
         System.out.println("新的客户端连接");
         // 在和客户端连接成功之后，为了可以接收到客户端的信息，需要给通道设置读的权限。
         channel.register(this.selector, SelectionKey.OP_READ);
     }
+
 
     /**
      * 处理读的事件
@@ -101,16 +107,19 @@ public class ServerScoket {
      * @throws IOException
      */
     public void handelerRead(SelectionKey key) throws IOException {
+
         // 服务器可读取消息:得到事件发生的Socket通道
         SocketChannel channel = (SocketChannel) key.channel();
         // 创建读取的缓冲区
         ByteBuffer buffer = ByteBuffer.allocate(1024);
+        //可以打断点调试，如果客户端有连接进入，没有写入任何数据
+        //线程也不会阻塞在这里
+        //设置NIO模式的表现
         int read = channel.read(buffer);
         if(read > 0){
             byte[] data = buffer.array();
             String msg = new String(data).trim();
             System.out.println("服务端收到信息：" + msg);
-
             //回写数据
             ByteBuffer outBuffer = ByteBuffer.wrap("好的".getBytes());
             channel.write(outBuffer);// 将消息回送给客户端
