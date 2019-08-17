@@ -7,6 +7,16 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by quincy on 18/5/13.
  */
 public class MyArrayList {
+
+
+    static {
+        int a = 1;
+
+        int b = 2;
+
+
+
+    }
     public static void main(String[] args) {
 
         ConcurrentHashMap<String, String> concurrentHashMap = new ConcurrentHashMap<>();

@@ -1,6 +1,7 @@
 package com.quincy.java.optimize.java.strategyreconsitution;
 
 /**
+ * 优化目的减少if....else写法
  * author:quincy
  * Date:2019-07-21
  * 贷款分为：定期贷款，循环贷款，建议信用额度贷款
