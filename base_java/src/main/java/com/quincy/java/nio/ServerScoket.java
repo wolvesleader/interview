@@ -75,9 +75,21 @@ public class ServerScoket {
            }
 
        }else if(selectionKey.isWritable()){
-
+           handlerWrite(selectionKey);
        }
 
+
+    }
+
+    public void handlerWrite(SelectionKey key){
+        try {
+            ByteBuffer buffer = (ByteBuffer) key.attachment();
+            SocketChannel channel = (SocketChannel) key.channel();
+            channel.write(buffer);
+            channel.register(selector, SelectionKey.OP_READ);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -117,12 +129,20 @@ public class ServerScoket {
         //设置NIO模式的表现
         int read = channel.read(buffer);
         if(read > 0){
+
             byte[] data = buffer.array();
             String msg = new String(data).trim();
             System.out.println("服务端收到信息：" + msg);
             //回写数据
-            ByteBuffer outBuffer = ByteBuffer.wrap("好的".getBytes());
-            channel.write(outBuffer);// 将消息回送给客户端
+            //直接通过channel写回去也可以但是不好
+            //可以注册写事件
+
+            ByteBuffer sendBuffer = ByteBuffer.allocate(1024);
+            sendBuffer.clear();
+            sendBuffer.put("好的".getBytes());
+            sendBuffer.flip();
+            channel.register(selector,SelectionKey.OP_WRITE,sendBuffer);
+            //channel.write(outBuffer);// 将消息回送给客户端
         }else{
             System.out.println("客户端关闭");
             key.cancel();
