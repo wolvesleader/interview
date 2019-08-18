@@ -14,7 +14,7 @@ import java.util.Set;
  * Created by quincy on 2018/6/20.
  * 没有提供客户端程序
  * 测试可以使用 telnet localhost 9999 命令开启多个窗口
- *NIO+Reactor(单线程模式)反应堆
+ *NIO+Reactor(反应堆)+单线程
  */
 public class ServerScoket {
 

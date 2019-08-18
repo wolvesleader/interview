@@ -1,12 +1,17 @@
-package com.quincy.java.base.iomodel.nio;
+package com.quincy.java.base.iomodel.nio_reactors_threads;
 
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.*;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * author:quincy
@@ -31,6 +36,7 @@ public class Reactor implements Runnable{
     @Override
     public void run() {
         try {
+            ///反应堆//
             while (!Thread.interrupted()) {
                 selector.select();
                 Set selected = selector.selectedKeys();
@@ -53,13 +59,13 @@ public class Reactor implements Runnable{
             try {
                 SocketChannel c = serverSocket.accept();
                 if (c != null)
-                    new Handler(selector, c);
+                    new HandlerWithThreadPool(selector, c);
             }catch(IOException ex) { /* ... */ }
         }
     }
 }
 
-final class Handler implements Runnable {
+final class HandlerWithThreadPool implements Runnable {
     final SocketChannel socket;
     final SelectionKey sk;
     static final int MAXIN = 256*1024;
@@ -69,7 +75,10 @@ final class Handler implements Runnable {
     static final int READING = 0, SENDING = 1;
     int state = READING;
 
-    Handler(Selector sel, SocketChannel c)
+    static ExecutorService pool = Executors.newFixedThreadPool(2);
+    static final int PROCESSING = 2;
+
+    HandlerWithThreadPool(Selector sel, SocketChannel c)
             throws IOException {
         socket = c;
         c.configureBlocking(false);
@@ -89,7 +98,6 @@ final class Handler implements Runnable {
     }
 
     void process(int readCount) {
-
         StringBuilder sb = new StringBuilder();
         input.flip();   //from writing mode to reading mode
         byte[] subStringBytes = new byte[readCount];
@@ -107,17 +115,31 @@ final class Handler implements Runnable {
             else if (state == SENDING) send();
         } catch (IOException ex) { /* ... */ }
     }
-    void read() throws IOException {
+    //为什么要加同步
+    //
+    synchronized void read() throws IOException {
         int read = socket.read(input);
         if (read > 0){
-            //if (inputIsComplete()) {
-            process(read);
-            state = SENDING;
-            // Normally also do first write now
-            sk.interestOps(SelectionKey.OP_WRITE);
-            //}
+            //设置状态正在处理数据中....
+            state = PROCESSING;
+            pool.execute(new Processer(read));
         }
     }
+    synchronized void processAndHandOff(int readCount) {
+        process(readCount);
+        state = SENDING; // or rebind attachment
+        sk.interestOps(SelectionKey.OP_WRITE);
+    }
+    class Processer implements Runnable {
+        int readCount;
+        Processer(int readCount){
+            this.readCount = readCount;
+        }
+        public void run() {
+            processAndHandOff(readCount);
+        }
+    }
+
     void send() throws IOException {
         output.clear();
         output.put("好的".getBytes());
@@ -125,7 +147,6 @@ final class Handler implements Runnable {
         socket.write(output);
         sk.interestOps(SelectionKey.OP_READ);
         state = READING;
-        //if (outputIsComplete()) sk.cancel();
     }
 
 
