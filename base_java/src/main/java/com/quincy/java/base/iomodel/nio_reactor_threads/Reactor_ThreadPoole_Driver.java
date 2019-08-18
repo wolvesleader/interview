@@ -1,4 +1,4 @@
-package com.quincy.java.base.iomodel.nio_reactors_threads;
+package com.quincy.java.base.iomodel.nio_reactor_threads;
 
 import java.io.IOException;
 
