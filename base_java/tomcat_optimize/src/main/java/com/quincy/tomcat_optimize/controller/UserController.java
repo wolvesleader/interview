@@ -11,9 +11,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class UserController {
 
+
+    private String string;
+
     @RequestMapping("/test/get")
     @ResponseBody
-    public String get(){
+    public String get( String str ){
         return "helloword";
     }
 }
