@@ -21,7 +21,6 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 @Configuration
 @EnableWebSecurity
 class PasswordWebSecurityConfig extends WebSecurityConfigurerAdapter {
-
     /**
      * 密码模式需要的权限
      * @return
