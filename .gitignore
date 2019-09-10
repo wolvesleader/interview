@@ -20,3 +20,7 @@ release.properties
 out/
 \# Mac
 .DS_Store
+.mvn
+mvnw
+mvnw.cmd
+HELP.md
