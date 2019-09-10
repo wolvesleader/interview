@@ -9,7 +9,6 @@ public class User {
     private Integer id;
     private String username;
     private User next;
-
     public User(Integer id, String username) {
         this.id = id;
         this.username = username;

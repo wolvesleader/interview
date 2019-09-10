@@ -15,13 +15,13 @@ public class OAuth2AuthorizationServer extends
     public void configure(ClientDetailsServiceConfigurer clients)
             throws Exception {
         clients.inMemory()
-            .withClient("clientapp")
-            .secret("112233")
-            .redirectUris("http://localhost:8080/callback")
-            // 简化模式
-            .authorizedGrantTypes("implicit")
-            .accessTokenValiditySeconds(120)
-            .scopes("read_userinfo", "read_contacts");
+                .withClient("clientapp")
+                .secret("112233")
+                .redirectUris("http://localhost:8080/callback")
+                // 简化模式
+                .authorizedGrantTypes("implicit")
+                .accessTokenValiditySeconds(120)
+                .scopes("read_userinfo", "read_contacts");
     }
 
 }

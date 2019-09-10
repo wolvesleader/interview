@@ -27,12 +27,12 @@ public class OAuth2AuthorizationServer extends
     public void configure(ClientDetailsServiceConfigurer clients)
             throws Exception {
         clients.inMemory()
-            .withClient("clientapp")
-            .secret("qing")
-            .redirectUris("http://localhost:8080/callback")
-            // 授权码模式
-            .authorizedGrantTypes("password")
-            .scopes("read_userinfo", "read_contacts");
+                .withClient("clientapp")
+                .secret("qing")
+                .redirectUris("http://localhost:8080/callback")
+                // 授权码模式
+                .authorizedGrantTypes("password")
+                .scopes("read_userinfo", "read_contacts");
     }
 
 }

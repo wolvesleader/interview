@@ -13,11 +13,11 @@ public class OAuth2ResourceServer extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-            .anyRequest()
-            .authenticated()
-        .and()
-            .requestMatchers()
-            .antMatchers("/api/**");
+                .anyRequest()
+                .authenticated()
+                .and()
+                .requestMatchers()
+                .antMatchers("/api/**");
     }
 
 }
