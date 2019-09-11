@@ -35,8 +35,6 @@ import java.security.KeyPair;
 @EnableAuthorizationServer
 class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
-
-
     @Autowired
     private DataSource dataSource;
 
