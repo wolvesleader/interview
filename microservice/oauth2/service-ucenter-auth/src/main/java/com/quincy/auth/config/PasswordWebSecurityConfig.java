@@ -33,7 +33,6 @@ class PasswordWebSecurityConfig extends WebSecurityConfigurerAdapter {
         return manager;
     }
 
-
     @Bean
     @Override
     protected UserDetailsService userDetailsService(){

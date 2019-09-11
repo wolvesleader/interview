@@ -1,0 +1,34 @@
+server:
+  port: ${PORT:9999}
+spring:
+  thymeleaf:
+    mode: HTML # Template mode to be applied to templates. See also Thymeleaf's TemplateMode enum.
+    prefix: classpath:/templates/ # Prefix that gets prepended to view names when building a URL.
+    suffix: .html # Suffix that gets appended to view names when building a URL.
+    cache: false
+  datasource:
+    url: jdbc:mysql://localhost:3306/xc_user?characterEncoding=utf-8
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: java
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      auto-commit: true
+      connection-timeout: 30000
+      idle-timeout: 600000
+      minimum-idle: 5
+      maximum-pool-size: 10
+      max-lifetime: 1800000
+
+auth:
+  tokenValiditySeconds: 1200  #token存储到redis的过期时间
+  clientId: XcWebApp
+  clientSecret: XcWebApp
+  cookieDomain: localhost
+  cookieMaxAge: -1
+encrypt:
+  key-store:
+    location: classpath:/xc.keystore
+    secret: xuechengkeystore
+    alias: xckey
+    password: xuecheng
