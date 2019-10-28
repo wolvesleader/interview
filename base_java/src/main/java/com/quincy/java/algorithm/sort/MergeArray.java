@@ -5,6 +5,7 @@ import java.util.Arrays;
 /**
  * author:quincy
  * Date:2019-04-18
+ * 把2个有序数组合并为一个有序的数组
  */
 public class MergeArray {
     public static void main(String[] args) {
