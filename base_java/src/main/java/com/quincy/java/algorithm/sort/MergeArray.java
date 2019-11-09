@@ -33,5 +33,7 @@ public class MergeArray {
 
 
         System.out.println(Arrays.toString(c));
+
+        System.out.println(5/2);
     }
 }
