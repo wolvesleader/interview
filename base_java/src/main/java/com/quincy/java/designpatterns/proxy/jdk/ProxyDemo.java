@@ -11,14 +11,12 @@ public class ProxyDemo {
     public static void main(String[] args) {
 
         IUserDao userDao = new UserDao();
-        IUserDao proxyUserDao = (IUserDao) Proxy.newProxyInstance(userDao.getClass().getClassLoader(), userDao.getClass().getInterfaces(), new InvocationHandler() {
+        IUserDao proxyUserDao = (IUserDao) Proxy.newProxyInstance(userDao.getClass().getClassLoader(),
+                userDao.getClass().getInterfaces(), new InvocationHandler() {
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                 System.out.println("sss");
-
                 Object invoke = method.invoke(userDao, args);
-
-
                 return invoke;
             }
         });

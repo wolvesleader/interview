@@ -1,7 +1,12 @@
 package com.quincy.java.algorithm.orphanage;
 
 /**
- * Created by quincy on 18/4/19.
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
  */
 public class ListNode {
     int val;
