@@ -6,6 +6,7 @@ package com.quincy.java.designpatterns.proxy.jdk;
 public interface IUserDao {
 
     public void save(String str);
+
 }
 
 

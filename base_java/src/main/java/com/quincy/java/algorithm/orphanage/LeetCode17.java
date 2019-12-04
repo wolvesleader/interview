@@ -14,6 +14,7 @@ import java.util.List;
  * 　　peek       返回队列头部的元素             如果队列为空，则返回null
  * 　　put         添加一个元素                      如果队列满，则阻塞
  * 　　take        移除并返回队列头部的元素     如果队列为空，则阻塞
+ * 需要多看
  */
 public class LeetCode17 {
 

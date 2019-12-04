@@ -1,0 +1,1 @@
+在 src/main/resources/ 下建立 /META-INF/services 目录，新建一个文件，名称为 Person 的全限定名 com.quincy.java.spi.Person。
