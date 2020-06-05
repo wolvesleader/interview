@@ -18,7 +18,7 @@ import java.util.concurrent.CyclicBarrier;
  * History:
  */
 
-public class TestDriver {
+public class DriverTest {
 
 
     @Test
