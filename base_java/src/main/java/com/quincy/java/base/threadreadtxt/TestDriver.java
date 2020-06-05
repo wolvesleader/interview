@@ -3,7 +3,10 @@ package com.quincy.java.base.threadreadtxt;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 
 /**
@@ -16,22 +19,29 @@ import java.util.concurrent.CyclicBarrier;
  */
 
 public class TestDriver {
-    /**
-     * 读取文本有多少行
-     * @return
-     */
+
+
     @Test
-    public void readLineNumber(){
+    public void data(){
+
+        File file = new File("/Volumes/quincy/study/interview/base_java/src/main/java/com/quincy/java/base/threadreadtxt/test.txt");
+        ThreadReadTxt threadReadTxt = new ThreadReadTxt(file);
+        try {
+            threadReadTxt.writeData();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
-        int threadCount = Runtime.getRuntime().availableProcessors() + 1;
 
-        //CyclicBarrier cyclicBarrier = new CyclicBarrier(threadCount);
+    @Test
+    public void testDriver(){
 
         File file = new File("/Volumes/quincy/study/interview/base_java/src/main/java/com/quincy/java/base/threadreadtxt/test.txt");
         ThreadReadTxt threadReadTxt = new ThreadReadTxt(file);
 
-        threadReadTxt.start(new Handle() {
+        /*threadReadTxt.start(new Handle() {
             @Override
             public void callback(byte[] bytes) {
                 try {
@@ -41,15 +51,10 @@ public class TestDriver {
                     e.printStackTrace();
                 }
             }
-        });
+        });*/
 
-        try {
-            Thread.sleep(20000);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        //threadReadTxt.fileContentZoneCount(0);
-        //threadReadTxt.getFileContentZoneList().stream().forEach(item -> System.out.println(item.getStart()+"--" + item.getEnd()));
+        threadReadTxt.start(null);
+
     }
 
 }

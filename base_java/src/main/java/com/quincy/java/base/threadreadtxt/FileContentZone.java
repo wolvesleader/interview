@@ -14,6 +14,7 @@ import java.util.Objects;
 public class FileContentZone {
     private long start;
     private long end;
+    private int part;
 
     public long getStart() {
         return start;
@@ -29,6 +30,15 @@ public class FileContentZone {
 
     public void setEnd(long end) {
         this.end = end;
+    }
+
+
+    public int getPart() {
+        return part;
+    }
+
+    public void setPart(int part) {
+        this.part = part;
     }
 
     @Override

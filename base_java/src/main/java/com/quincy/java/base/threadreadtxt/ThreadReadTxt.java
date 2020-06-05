@@ -6,21 +6,28 @@ import org.junit.Test;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
-
+import java.util.concurrent.atomic.AtomicInteger;
+/**
+ * Copyright (C), 2015-2020, 大众易书天津科技有限公司
+ * FileName: FileContentZone
+ * Date: 2020/6/4 下午7:45
+ * History:
+ * @author quincy
+ */
 
 public class ThreadReadTxt {
 
     private RandomAccessFile randomAccessFile;
     private long fileLength;
-    private int threadCount = Runtime.getRuntime().availableProcessors() + 1;
+    private int threadCount =  Runtime.getRuntime().availableProcessors() + 1;
     private long zoneSize ;
 
-    //private CopyOnWriteArrayList<FileContentZone> fileContentZoneList;
     private Set<FileContentZone> fileContentZoneSet;
 
     private ExecutorService executorService;
 
-    private CyclicBarrier cyclicBarrier;
+    private AtomicInteger atomicInteger = new AtomicInteger(0);
+
 
 
     public ThreadReadTxt(File file){
@@ -29,20 +36,10 @@ public class ThreadReadTxt {
             System.out.println("文件大小："+this.fileLength);
             this.zoneSize = this.fileLength / threadCount;
             this.randomAccessFile = new RandomAccessFile(file,"rw");
-            //fileContentZoneList = new CopyOnWriteArrayList();
             fileContentZoneSet = Collections.synchronizedSet(new HashSet<>());
             executorService = Executors.newFixedThreadPool(threadCount);
         } catch (Exception e) {
             throw new RuntimeException("创建ThreadReadTxt失败 ",e);
-        }
-    }
-
-    @Test
-    public void data(){
-        try {
-            writeData();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -51,17 +48,18 @@ public class ThreadReadTxt {
 
     protected void start(Handle handle){
         fileContentZoneCount(0);
+
         final long startTime = System.currentTimeMillis();
-        final CountDownLatch latch = new CountDownLatch(5);
-        cyclicBarrier = new CyclicBarrier(fileContentZoneSet.size(),new Runnable() {
+       CyclicBarrier cyclicBarrier = new CyclicBarrier(fileContentZoneSet.size(),new Runnable() {
 
             @Override
             public void run() {
                 System.out.println("use time: "+(System.currentTimeMillis()-startTime));
-
             }
         });
-        fileContentZoneSet.stream().forEach(item ->this.executorService.execute(new FileContentZoneTask(item,this.randomAccessFile,handle,latch)));
+
+       fileContentZoneSet.stream().forEach(item ->this.executorService.execute(new FileContentZoneTask(item,this.randomAccessFile,handle,cyclicBarrier)));
+
     }
 
 
@@ -73,6 +71,7 @@ public class ThreadReadTxt {
             long endPosition = ( startPosition + zoneSize ) - 1;
             FileContentZone fileContentZone = new FileContentZone();
             fileContentZone.setStart(startPosition);
+            fileContentZone.setPart(atomicInteger.incrementAndGet());
             if (endPosition > fileLength - 1){
                 fileContentZone.setEnd(fileLength - 1);
                 fileContentZoneSet.add(fileContentZone);
