@@ -59,9 +59,7 @@ class ThreadResources  implements  Runnable{
 class MyThreadPool implements Executor{
     @Override
     public void execute(Runnable command) {
-
           command.run();
-
     }
 }
 

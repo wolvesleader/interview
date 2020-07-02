@@ -8,7 +8,6 @@ package com.quincy.java.designpatterns.decorator;
  * 装饰者模式和动态代理模式的区别
  */
 public class UserService {
-
     public void save(){
         System.out.println("原来的方法");
     }

@@ -30,11 +30,14 @@ public class VolatileDriver {
 
 
 
+
 class VolatileDemo implements Runnable{
-    private  boolean flag = false;
+    private volatile boolean flag = false;
 
     @Override
     public void run() {
+
+
 
         try {
             Thread.sleep(200);
