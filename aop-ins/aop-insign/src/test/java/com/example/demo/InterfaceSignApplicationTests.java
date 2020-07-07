@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 @SpringBootTest
-class DemoApplicationTests {
+class InterfaceSignApplicationTests {
 
     @Autowired
     private RestTemplate restTemplate ;
@@ -35,6 +35,7 @@ class DemoApplicationTests {
         JSONObject signObj = new JSONObject();
         signObj.put("timestamp", timestamp);
         signObj.put("nonce", nonce);
+        signObj.put("username", "miaoqing");
         String sign = SignUtil.getSign(signObj);
         return sign;
     }
@@ -46,6 +47,7 @@ class DemoApplicationTests {
         headers.add("timestamp", String.valueOf(timestamp));
         headers.add("nonce", String.valueOf(nonce));
         headers.add("sign", sign);
+        headers.add("username","miaoqing");
         HttpEntity<String> requestEntity = new HttpEntity<>(headers);
         ResponseEntity<String> resultEntity = restTemplate.exchange("http://localhost:9999//demo/test", HttpMethod.GET, requestEntity, String.class);
         String body = resultEntity.getBody();
