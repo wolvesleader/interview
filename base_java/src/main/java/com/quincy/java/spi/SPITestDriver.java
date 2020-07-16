@@ -4,10 +4,6 @@ import org.junit.Test;
 
 import java.util.ServiceLoader;
 
-/**
- * author:quincy
- * Date:2019-11-21
- */
 public class SPITestDriver {
 
 

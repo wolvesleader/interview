@@ -31,11 +31,7 @@ public class CheckSignAspect {
     private HttpServletRequest request;
 
     @Autowired
-    private HttpServletResponse response;
-
-    @Autowired
     StringRedisTemplate stringRedisTemplate;
-
 
 
     @Pointcut("@annotation(com.example.demo.utils.Sign)")
