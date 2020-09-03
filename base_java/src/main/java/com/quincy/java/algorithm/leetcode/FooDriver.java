@@ -1,8 +1,6 @@
-package com.quincy.java.algorithm.orphanage;
+package com.quincy.java.algorithm.leetcode;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.LinkedList;
 
 /**

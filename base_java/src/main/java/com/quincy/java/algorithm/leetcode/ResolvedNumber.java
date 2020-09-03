@@ -1,4 +1,4 @@
-package com.quincy.java.algorithm.orphanage;
+package com.quincy.java.algorithm.leetcode;
 
 import java.util.Stack;
 
