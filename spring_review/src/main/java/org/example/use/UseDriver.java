@@ -1,5 +1,9 @@
 package org.example.use;
 
+import org.example.beanlife.BeanModel;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 /**
  * Copyright (C), 2015-2020, 大众易书天津科技有限公司
  * FileName: UseDriver
@@ -21,4 +25,12 @@ package org.example.use;
  */
 
 public class UseDriver {
+    public static void main(String[] args) {
+        //ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring/applicationContext.xml");
+        AnnotationConfigApplicationContext ctx=new AnnotationConfigApplicationContext("org.example.use");
+        DataSourceConfig bean = (DataSourceConfig)ctx.getBean("dataSourceConfig");
+        System.out.println(bean.getDiverClass());
+        ctx.close();
+        System.out.println(bean);
+    }
 }
