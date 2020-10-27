@@ -6,13 +6,11 @@
 
   <groupId>com.quincy.base</groupId>
   <artifactId>base_java</artifactId>
-    <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
-    <modules>
-        <module>tomcat_optimize</module>
-    </modules>
+<!--  <packaging>pom</packaging>-->
 
-    <name>base_java</name>
+  <version>1.0-SNAPSHOT</version>
+
+  <name>base_java</name>
 
 
   <properties>
@@ -140,7 +138,6 @@
       <artifactId>mysql-connector-java</artifactId>
       <version>5.1.32</version>
     </dependency>
-
 
   </dependencies>
 

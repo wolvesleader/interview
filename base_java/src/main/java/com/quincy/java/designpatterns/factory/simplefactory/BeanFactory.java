@@ -19,9 +19,9 @@ public class BeanFactory {
      */
     public static Object getBean(String beanName){
 
-        if (StringUtils.isEmpty(beanName)){
-            return null;
-        }
+//        if (StringUtils.isEmpty(beanName)){
+//            return null;
+//        }
         if ("user".equals(beanName)){
            return new SimpleUser();
         }else if ("person".equals(beanName)){
