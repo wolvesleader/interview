@@ -94,7 +94,7 @@ zset
     Zinterstore
     zunionstore rank:last_week 7 rank:20150323 rank:20150324 rank:20150325  weights 1 1 1 1 1 1 1
     
-    
+    //ZREVRANGE zrevrange
 排序：
     sort mylist  排序
     sort mylist alpha desc limit 0 2 字母排序
