@@ -51,6 +51,19 @@ public class RedisApplicationTest {
      * 增加或移除某个玩家，并对排名进行更新
      */
     @Test
+    public void addPayerUpdateRank(){
+        long startTime = System.currentTimeMillis();
+        JedisPoolUtil jedisPoolUtil = new JedisPoolUtil();
+        Long user_score = jedisPoolUtil.zadd("user_score",93.1504697596, String.valueOf(10001));
+        System.out.println(user_score);
+        long endTime = System.currentTimeMillis();
+        System.out.println("耗费时间:" + String.valueOf(endTime-startTime));
+    }
+
+    /**
+     * 增加或移除某个玩家，并对排名进行更新
+     */
+    @Test
     public void addOrUpdatePayerUpdateRank(){
         long startTime = System.currentTimeMillis();
         JedisPoolUtil jedisPoolUtil = new JedisPoolUtil();

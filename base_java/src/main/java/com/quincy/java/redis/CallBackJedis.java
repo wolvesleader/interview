@@ -9,6 +9,7 @@ import redis.clients.jedis.Jedis;
  *
  * @author: quincy
  * Date: 2020/6/11 上午10:56
+ * 提供接口的原因是防止其他人忘记关闭连接
  * History:
  */
 public interface CallBackJedis {

@@ -1,6 +1,5 @@
 package com.quincy.java.redis;
 
-import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Response;
@@ -9,7 +8,6 @@ import redis.clients.jedis.exceptions.JedisConnectionException;
 import redis.clients.jedis.params.SetParams;
 
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * Copyright (C), 2015-2020, 大众易书天津科技有限公司
@@ -20,11 +18,12 @@ import java.util.UUID;
  * History:
  */
 public class JedisPoolUtil {
-    private JedisPool jedisPool;
-    private int maxCount = 2;
+    private  JedisPool jedisPool;
+    private int MAX_COUNT = 2;
+    int CONNECTION_COUNT = 0;
     public JedisPoolUtil(){
         //多线程情况下会出现问题
-        this.jedisPool = new JedisPool("49.234.30.116",6379);
+        this.jedisPool = new JedisPool("49.234.30.116",45069);
     }
 
     /**
@@ -32,18 +31,17 @@ public class JedisPoolUtil {
      * @param callBackJedis
      */
     private void execute(CallBackJedis callBackJedis){
-        int count = 0;
         Jedis jedis = jedisPool.getResource();
-        //jedis.auth("exchangebook","exchangebook@1314");
-
+        jedis.auth("qiaoming","woshinimiaoye");
         try{
             callBackJedis.call(jedis);
         }catch (JedisConnectionException e){
             //做三次尝试，如果三次都失败放弃连接
-            if (count < maxCount){
+            if (CONNECTION_COUNT < MAX_COUNT){
                 callBackJedis.call(jedis);
             }
         }finally {
+            CONNECTION_COUNT =0;
             jedis.close();
         }
     }
@@ -61,6 +59,13 @@ public class JedisPoolUtil {
     public String getnx(String key){
         Holder<String> holder = new Holder<>();
         execute(jedis -> holder.value(jedis.get(key)));
+        return holder.value();
+    }
+
+
+    public Long zadd(String key, double score, String member){
+        Holder<Long> holder = new Holder<>();
+        execute(jedis -> holder.value(jedis.zadd(key,score,member)));
         return holder.value();
     }
 
@@ -115,15 +120,6 @@ public class JedisPoolUtil {
         Holder<Response<Set<Tuple>>> holder = new Holder<>();
         execute(jedis -> holder.value(jedis.pipelined().zrevrangeWithScores(key,0,-1)));
         return holder.value();
-    }
-
-
-    public static void main(String[] args) {
-        JedisPoolUtil jedisPoolUtil = new JedisPoolUtil();
-        String s = UUID.randomUUID().toString();
-        jedisPoolUtil.setnx(s,"miaoqing", 3600000L);
-        System.out.println(jedisPoolUtil.getnx(s));
-
     }
 
 
