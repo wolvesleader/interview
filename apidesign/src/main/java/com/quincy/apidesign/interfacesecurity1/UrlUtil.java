@@ -15,9 +15,7 @@ import java.util.Map;
 public class UrlUtil {
 
     public static class UrlEntity {
-        /**
-         * 基础url
-         */
+
         public String baseUrl;
         /**
          * url参数

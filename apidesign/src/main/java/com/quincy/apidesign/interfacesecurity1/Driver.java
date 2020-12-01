@@ -16,9 +16,9 @@ public class Driver {
         String appId = "ys1";
         String password = "DAJIAHAO";
         long timestamp = System.currentTimeMillis();
-        String token = AuthToken.genToken(baseUrl, appId, password, timestamp);
-        String finalUrl = baseUrl + "?appId=" + appId + "&token=" + token + "&timestamp=" + timestamp + 100000L;
-        System.out.println(finalUrl);
-        apiAuthenticator.auth(finalUrl);
+       // String token = AuthToken.genToken(baseUrl, appId, password, timestamp);
+       // String finalUrl = baseUrl + "?appId=" + appId + "&token=" + token + "&timestamp=" + timestamp + 100000L;
+        //System.out.println(finalUrl);
+       // apiAuthenticator.auth(finalUrl);
     }
 }

@@ -40,6 +40,7 @@ public class DefaultApiAuthenticatorImpl implements ApiAuthenticator {
         }
 
         String password = credentialStorage.getPasswordByAppId(appId);
+
         AuthToken serverAuthToken = AuthToken.generate(baseUrl, appId, password, timestamp);
 
         if (!serverAuthToken.match(clientAuthToken)) {

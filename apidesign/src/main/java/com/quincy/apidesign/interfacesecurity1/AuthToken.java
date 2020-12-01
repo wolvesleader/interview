@@ -25,6 +25,8 @@ public class AuthToken {
     private String token;
     private long  timestamp;
 
+
+
     public AuthToken(String token, long timestamp) {
         this.timestamp = timestamp;
         this.token = token;
@@ -34,7 +36,6 @@ public class AuthToken {
         String token = genToken(baseUrl, appId, password, timestamp);
         AuthToken authToken = new AuthToken(token,timestamp);
         return authToken;
-
     }
 
     public static String genToken(String baseUrl, String appId, String password, long timestamp){
@@ -47,7 +48,7 @@ public class AuthToken {
             byte[] rawHmac = mac.doFinal(password.getBytes());
             byte[] result = Base64.getEncoder().encode(rawHmac);
             String token = new String(result, "UTF-8");
-            //必须取消掉=号要不然参数解析解析不出来
+            //必须取消掉=号要不然参数解析不出来
             return token.replace("=","-0i");
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
