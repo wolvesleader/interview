@@ -33,6 +33,7 @@ public class JedisPoolUtil {
     private void execute(CallBackJedis callBackJedis){
         Jedis jedis = jedisPool.getResource();
         jedis.auth("qiaoming","woshinimiaoye");
+        //jedis.auth("")
         try{
             callBackJedis.call(jedis);
         }catch (JedisConnectionException e){

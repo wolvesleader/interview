@@ -41,4 +41,6 @@ public class HidePathController {
         // TODO: 2020/12/1 正常的秒杀业务
         return "success";
     }
+
+
 }

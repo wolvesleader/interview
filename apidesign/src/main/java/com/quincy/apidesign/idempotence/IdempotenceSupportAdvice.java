@@ -31,7 +31,6 @@ public class IdempotenceSupportAdvice {
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
         //请求流水号
         String idempotenceId = request.getHeader("idempotenceId");
-
         boolean check = idempotence.check(idempotenceId);
         if (check){
             // TODO: 2020/12/1 返回重复对象，方便用户排查 

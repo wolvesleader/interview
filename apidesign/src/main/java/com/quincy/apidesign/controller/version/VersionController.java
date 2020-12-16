@@ -17,6 +17,8 @@ public class VersionController {
     /**
      * 通过URL Path实现版本控制
      * @return
+     * /version/v1/api/user?name=123456
+     *
      */
     @GetMapping("/v1/api/user")
     public String getName(){
@@ -50,6 +52,7 @@ public class VersionController {
     public String getName5(@RequestHeader("X-API-VERSION") int version) {
         return "通过请求头中的X-API-VERSION参数实现版本控制 v1";
     }
+
 
     @GetMapping(value = "/api/user", headers = "X-API-VERSION=2")
     public String getName6(@RequestHeader("X-API-VERSION") int version) {
