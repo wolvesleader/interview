@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://www.exchangebook.com/schema/quincy"
+           xmlns="http://www.exchangebook.com/schema/quincy"
+           elementFormDefault="qualified">
+
+    <xs:element name="person" type="personType"/>
+    <xs:complexType name="personType">
+        <xs:attribute name="id" type="xs:string" />
+        <xs:attribute name="name" type="xs:string"/>
+        <xs:attribute name="age" >
+            <!--限定属性值在0~120之间-->
+            <xs:simpleType>
+                <xs:restriction base="xs:integer">
+                    <xs:minInclusive value="0"/>
+                    <xs:maxInclusive value="120"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+</xs:schema>
