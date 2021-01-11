@@ -12,13 +12,23 @@ import java.util.HashMap;
  */
 public class HashMap8SourceAnalyse {
 
+
+    static final int hash(Object key) {
+        int h;
+        return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
+    }
+
     public static void main(String[] args) {
 
+       int result =  hash("null") & 15;
+        System.out.println(result);
+
+
         HashMap<String, String> hashMap = new HashMap<>(4);
-        hashMap.put("1","12345");
-        hashMap.put("2","dd");
-        hashMap.put("3","ces");
-        hashMap.put("4","fff");
+       // hashMap.put("1","12345");
+       // hashMap.put("2","dd");
+       // hashMap.put("3","ces");
+       // hashMap.put("4","fff");
         hashMap.put("Aa","Aa");
         hashMap.put("BB","BB");
         hashMap.put("ABCDEa123abc","ABCDEa123abc");

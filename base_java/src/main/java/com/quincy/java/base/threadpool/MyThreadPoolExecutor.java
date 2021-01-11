@@ -1,6 +1,7 @@
 package com.quincy.java.base.threadpool;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -40,6 +41,7 @@ public class MyThreadPoolExecutor {
 
     //执行器，开始执行任务
     public void executor(Runnable runnable){
+
         try {
             if(coreSize.get() <  initSize.get() ){
                  addWorker(runnable);

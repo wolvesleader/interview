@@ -20,7 +20,7 @@ public class ThreadCreateOneDriver {
 class ThreadCreateOneDemo extends Thread{
 
     @Override
-    public void run(){
+    public void run() {
 
         new Exception();
         System.out.println("线程的创建方式1");

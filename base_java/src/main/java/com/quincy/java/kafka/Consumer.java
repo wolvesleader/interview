@@ -24,6 +24,11 @@ import java.util.Properties;
 
 public class Consumer {
     public static void main(String[] args) throws Exception{
+        StringBuffer sb = new StringBuffer("你的那一串字符串");
+        StringBuffer reverse = sb.reverse();
+        System.out.println(reverse.toString());
+
+
         consumerGroup();
         //Thread.sleep(10000000);
     }

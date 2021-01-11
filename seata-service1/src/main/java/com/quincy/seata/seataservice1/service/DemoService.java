@@ -16,6 +16,10 @@ public class DemoService {
 
     //事务注解
     public void test(){
+
+
+
+
         demoDao.insert("test");
 
        // HttpClient
