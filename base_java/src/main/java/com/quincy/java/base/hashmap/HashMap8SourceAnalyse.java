@@ -46,11 +46,11 @@ public class HashMap8SourceAnalyse {
      *  Node<K,V> loHead = null, loTail = null;Node<K,V> hiHead = null, hiTail = null;
      *  这4个节点 高位为0则相同 point = j，高位不同则 point = j + oldCap j=原来的位置
      *  假如一个hashmap由16要扩容到32
-     *  扩容前 hash & (length - 1)
-     *  16 - 1 = 15  binary 001111
-     *  hash   = 48  binary 110000
-     *----------------------------
-     *                      000000
+     *  扩容前 hash & (length - 1)         (oldCap & e.hash) == 0
+     *  16 - 1 = 15  binary 001111        010000   位置改变 = point = j + 010000 = j + 16 = j + oldCap
+     *  hash   = 48  binary 110000        110000
+     *----------------------------       --------
+     *                      000000        010000
      *  扩容后
      *  32 -1 = 31 binary  011111
      *  hash  = 48 binary  110000
@@ -58,10 +58,10 @@ public class HashMap8SourceAnalyse {
      *                     010000   16
      *  假如一个hashmap由16要扩容到32
      *  扩容前 hash & (length - 1)
-     *  16 - 1 = 15   binary 0001111
-     *  hash   = 100  binary 1100100
-     *------------------------------
-     *                       0000100
+     *  16 - 1 = 15   binary 0001111      0010000      位置不变  point = j
+     *  hash   = 100  binary 1100100      1100100
+     *------------------------------    ----------
+     *                       0000100      0000000
      *  扩容后
      *  32 -1 =  31 binary  0011111
      *  hash  = 100 binary  1100100
