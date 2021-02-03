@@ -14,8 +14,6 @@ public class MyProxyGenerator {
 
     public static void main(String[] args) {
 
-          new Vector<String>();
-
         IUserDao userDao = new UserDao();
         byte[] classFile = ProxyGenerator.generateProxyClass("$Proxy11", UserDao.class.getInterfaces());
         FileOutputStream out = null;

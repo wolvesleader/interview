@@ -32,6 +32,7 @@ public class JedisPoolUtil {
      */
     private void execute(CallBackJedis callBackJedis){
         Jedis jedis = jedisPool.getResource();
+        //default
         jedis.auth("qiaoming","woshinimiaoye");
         //jedis.auth("")
         try{

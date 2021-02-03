@@ -4,6 +4,7 @@ import org.apache.kafka.clients.producer.ProducerInterceptor;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -20,7 +21,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class CounterInterceptor implements ProducerInterceptor<String, String> {
 
-    private AtomicInteger atomicInteger = new AtomicInteger();
+
+
+
+
+    private AtomicInteger atomicInteger = new AtomicInteger(3);
     @Override
     public ProducerRecord<String, String> onSend(ProducerRecord<String, String> record) {
         String lixKey =  atomicInteger.incrementAndGet() + record.key();
@@ -31,6 +36,8 @@ public class CounterInterceptor implements ProducerInterceptor<String, String> {
 
     @Override
     public void onAcknowledgement(RecordMetadata metadata, Exception exception) {
+
+
 
 
     }

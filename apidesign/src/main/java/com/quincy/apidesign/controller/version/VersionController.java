@@ -25,6 +25,7 @@ public class VersionController {
         return "通过URL Path实现版本控制 v1";
     }
 
+
     @GetMapping("/v2/api/user")
     public String getName2(){
         return "通过URL Path实现版本控制 v2";

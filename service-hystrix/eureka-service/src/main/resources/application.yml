@@ -1,0 +1,13 @@
+server:
+  port: 9001
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://localhost:9001/eureka
+  server:
+    enable-self-preservation: false
+spring:
+  application:
+    name: eureka-service

@@ -20,13 +20,8 @@ public class ProxyDemo {
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                 System.out.println("sss");
-
-
                 //执行被代理对象里边的save方法
                 Object invoke = method.invoke(userDao, args);
-
-
-
                 return invoke;
             }
         });

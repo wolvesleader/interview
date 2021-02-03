@@ -1,5 +1,7 @@
 package com.quincy.java.base.cas;
 
+import sun.misc.Unsafe;
+
 import java.util.Random;
 
 /**
@@ -8,6 +10,9 @@ import java.util.Random;
 public class CasDriver2 {
 
     public static void main(String[] args) {
+
+        Unsafe unsafe = Unsafe.getUnsafe();
+        //unsafe.compareAndSwapInt()
 
         CompareAndSwap2 compareAndSwap2 = new CompareAndSwap2();
 

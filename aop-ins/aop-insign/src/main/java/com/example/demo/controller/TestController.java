@@ -5,6 +5,7 @@ import com.example.demo.utils.Sign;
 import com.example.demo.utils.SignUtil;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
  * Copyright (C), 2015-2020, 大众易书天津科技有限公司

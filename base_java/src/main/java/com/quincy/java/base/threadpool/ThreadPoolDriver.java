@@ -57,9 +57,6 @@ public class ThreadPoolDriver {
             }
             //Object o = submit.get();
             //System.out.println(o);
-
-
-
         }
 
         Thread.sleep(40000);
@@ -69,9 +66,6 @@ public class ThreadPoolDriver {
                     + ";" + executor.getActiveCount()
             );
         }
-
-
-
         //executor.shutdown();
 
     }

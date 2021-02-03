@@ -11,10 +11,14 @@ package com.quincy.java.base;
 
 public class Demo {
     public static void main(String[] args) {
-        int[] a = {2, 3, 5};
-        for (int i : a) {
-            System.err.println(i);
-            System.out.println(a[i + 1]);
+
+        synchronized (Demo.class){
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+
     }
 }
