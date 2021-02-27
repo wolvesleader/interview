@@ -1,6 +1,7 @@
 package com.quincy.crawler.utils;
 
 import com.quincy.crawler.douban.pojo.Book;
+import com.quincy.crawler.douban.pojo.BookList;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
@@ -15,6 +16,83 @@ import org.jsoup.select.Elements;
  */
 
 public class BookUtils {
+
+
+    /**
+     *
+     * 1.文学
+     *  1.1 小说
+     *  =================
+     *  1.2外国文学
+     *  1.3文学
+     *  1.4经典
+     *  1.5中国文学
+     *  1.6随笔
+     *  1.7日本文学
+     *  1.8散文
+     *  1.9村上春树
+     *  1.10诗歌
+     *  1.11童话
+     *  1.12名著
+     *  1.13儿童文学
+     *  1.14古典文学
+     *  1.15余华
+     *  1.16王小波
+     *  1.17杂文
+     *  1.18当代文学
+     *  1.19张爱玲
+     *  1.20外国名著
+     *  1.21钱钟书
+     *  1.22鲁迅
+     *  1.23诗词
+     *  1.24茨威格
+     *  1.25米兰·昆德拉
+     *  1.26杜拉斯
+     *  1.27港台
+     *
+     *
+
+     * 2.流行
+     *  2.1 漫画
+     *      2.2推理(1292462)	绘本(1114100)	东野圭吾(818767)
+     *      青春(804472)	悬疑(793234)	科幻(740123)	言情(608497)
+     *      推理小说(461207)	奇幻(427491)	武侠(382324)	日本漫画(364925)
+     *      耽美(349412)	网络小说(277935)	科幻小说(274694)	韩寒(270781)
+     *      三毛(264100)	亦舒(246103)	阿加莎·克里斯蒂(220660)	金庸(195061)
+     *      安妮宝贝(177474)	穿越(173415)	轻小说(160259)	魔幻(159851)
+     *      郭敬明(159640)	青春文学(150052)	几米(121622)	J.K.罗琳(117509)
+     *      幾米(105390)	张小娴(98733)	校园(89270)	古龙(85910)
+     *      高木直子(78368)	沧月(68794)	余秋雨(63450)	落落(58491)
+     * 3.文化
+     *  3.1 历史
+     *
+     历史(2949870)	心理学(1913303)	哲学(1678104)	社会学(1168478)
+     传记(1035547)	文化(992372)	艺术(744750)	社会(699467)
+     政治(556443)	设计(496244)	政治学(354577)	宗教(344460)
+     建筑(328833)	电影(320730)	数学(298925)	中国历史(297347)
+     回忆录(258597)	思想(224521)	人物传记(198810)	国学(194951)
+     艺术史(184667)	人文(170445)	音乐(156782)	绘画(151437)
+     戏剧(146536)	西方哲学(133553)	近代史(118531)	二战(114539)
+     军事(102878)	佛教(98420)	考古(71488)	自由主义(60478)
+     美术(55128)
+     * 4.生活
+     *  4.1 爱情
+     * 5.经管
+     *  5.1经济学
+     * 6.科技
+     *  6.1科普
+     *  6.2互联网
+     *  6.3编程
+     *  6.4科学
+     *  6.5交互设计
+     *  6.6算法
+     *  6.7用户体验
+     *  6.8科技
+     *  6.9web
+     *  6.10交互
+     *  6.11通信
+     */
+    //static String  bookType = "1.7";
 
 
     /**
@@ -40,14 +118,14 @@ public class BookUtils {
      * @param bookId
      * @return
      */
-    public static Book parseBookDetailToBean(Document document, String bookId){
+    public static Book parseBookDetailToBean(Document document, String bookId, BookList bookList){
 
         if (document == null) {
             return null;
         }
 
         Book book = new Book();
-        book.setBookType("1");
+        book.setBookType(bookList.getBookType().getBookType());
         //书名字
         String bookName = document.select("#wrapper span[property=v:itemreviewed]").text();
 
@@ -59,11 +137,13 @@ public class BookUtils {
 
 
         //豆瓣评分
-        Elements doubanStarEle = document.select("strong[property=v:average]");
-        if (doubanStarEle != null && doubanStarEle.size() > 0){
-            String doubanStar = doubanStarEle.get(0).text();
-            book.setDoubanStar(doubanStar.trim());
+
+        Elements douBanStarEle = document.select("strong[property=v:average]");
+        if (douBanStarEle != null && douBanStarEle.size() > 0){
+            String douBanStar = douBanStarEle.get(0).text();
+            book.setDoubanStar(douBanStar.trim());
         }
+
 
         Element eleContent = getParentElementByText(document, "内容简介");
         if (eleContent != null){
@@ -110,6 +190,7 @@ public class BookUtils {
                 Node node = select.get(i).nextSibling();
                 if (node != null){
                     String price = node.toString().trim();
+                    price = price.replace("元","");
                     book.setPrice(price);
                 }
             }else if("装帧:".contains(text)){

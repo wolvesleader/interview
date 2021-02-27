@@ -8,6 +8,9 @@ import org.jsoup.select.Elements;
  * @author: quincy
  * @Date: 2021/2/9 下午11:39
  * @History:
+ *
+ * "https://book.douban.com/tag/小说?start="+0+"&type=T";
+ * "https://book.douban.com/tag/漫画?start="+0+"&type=T"
  */
 
 public class BookList {
@@ -16,15 +19,25 @@ public class BookList {
 
     private Elements elements;
 
-    private String bookListUrl = "https://book.douban.com/tag/小说?start="+0+"&type=T";
+   // private String bookListUrl ;
+
+    private BookType bookType;
+
+    public void setBookType(BookType bookType) {
+        this.bookType = bookType;
+    }
+
+    public BookType getBookType() {
+        return bookType;
+    }
 
     public String getBookListUrl() {
-        return "https://book.douban.com/tag/小说?start="+getCurrentPage()+"&type=T";
+        return "https://book.douban.com/tag/" + this.bookType.getTypeName() + "?start="+getCurrentPage()+"&type=T";
     }
 
-    public void setBookListUrl(String bookListUrl) {
-        this.bookListUrl = "https://book.douban.com/tag/小说?start="+getCurrentPage()+"&type=T";
-    }
+    /*public void setBookListUrl(String bookListUrl) {
+        this.bookListUrl = "https://book.douban.com/tag/" + this.bookType.getTypeName() + "?start="+getCurrentPage()+"&type=T";
+    }*/
 
     public Elements getElements() {
         return elements;

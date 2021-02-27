@@ -8,6 +8,7 @@ import java.util.Properties;
 /**
  * author:quincy
  * Date:2019-07-11
+ * @author quincy
  */
 public class DbUtils {
 

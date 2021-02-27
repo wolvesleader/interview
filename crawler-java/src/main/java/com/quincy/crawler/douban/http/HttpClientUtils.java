@@ -35,7 +35,7 @@ public class HttpClientUtils {
         // 获得Http客户端(可以理解为:你得先有一个浏览器;注意:实际上HttpClient与浏览器是不一样的)
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         // 创建Get请求
-        HttpGet httpGet = new HttpGet("https://proxyapi.horocn.com/api/v2/proxies?order_id=RRC21691212369570157&num=10&format=text&line_separator=win&user_token=10773e076c278999d61fb74d9ea6d74a");
+        HttpGet httpGet = new HttpGet("https://proxyapi.horocn.com/api/v2/proxies?order_id=3CGM1692736548485803&num=10&format=text&line_separator=win&user_token=10773e076c278999d61fb74d9ea6d74a");
 
         // 响应模型
         CloseableHttpResponse response = null;
