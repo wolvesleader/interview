@@ -23,7 +23,8 @@ public class MergeSort {
             return ;
         }
         //base case
-        if (L == R){//分解到最小了不能在分解了
+        //分解到最小了不能在分解了
+        if (L == R){
             return ;
         }
         //求出中间值，然后分为左边和右边，分别把左边和右边排好序，在拷贝到我们定义的数组中
@@ -42,9 +43,12 @@ public class MergeSort {
         //定义一个数组
         int[] help = new int[R - L + 1];
         System.out.println(help.length);
-        int index = 0;// help数组的索引
-        int p1 = L;//左边数组移动到的为止
-        int p2 = min + 1; //右边数组移动到的位置
+        // help数组的索引
+        int index = 0;
+        //左边数组移动到的为止
+        int p1 = L;
+        //右边数组移动到的位置
+        int p2 = min + 1;
         //如果左边和右边的长度相同，都没有越界
         while (p1 <= min && p2 <= R){
             help[index++] = arr[p1] < arr[p2] ? arr[p1] : arr[p2];
