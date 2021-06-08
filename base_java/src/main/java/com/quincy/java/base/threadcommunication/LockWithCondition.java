@@ -14,6 +14,7 @@ public class LockWithCondition {
     private volatile int a = 0;
 
     private Lock lock = new ReentrantLock(true);
+
     private Condition condition1 = lock.newCondition();
     private Condition condition2 = lock.newCondition();
 

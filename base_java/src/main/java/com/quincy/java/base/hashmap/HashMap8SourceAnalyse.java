@@ -4,12 +4,26 @@ package com.quincy.java.base.hashmap;
 import org.junit.Test;
 
 import java.util.*;
+import java.util.concurrent.locks.Lock;
 
 
 /**
  * Created by quincy on 2018/12/15.
  */
 public class HashMap8SourceAnalyse {
+
+
+
+    public static List test(){
+        System.out.println("000");
+        //数组
+        //ArrayList
+        //封装对象
+        return new ArrayList();
+    }
+
+
+
 
 
     static final int hash(Object key) {
@@ -19,6 +33,20 @@ public class HashMap8SourceAnalyse {
 
     public static void main(String[] args) {
 
+
+        //0,1,2,3
+        System.out.println(test());;
+
+
+
+
+
+        ArrayList<String> arrayList = new ArrayList<>(2);
+        arrayList.add("111");
+
+
+
+
         System.out.println(12 & 16);;
         System.out.println(12 & (16 - 1));
 
@@ -26,7 +54,10 @@ public class HashMap8SourceAnalyse {
         System.out.println(result);
 
 
-        HashMap<String, String> hashMap = new HashMap<>();
+        //jdk1.7哈希表+链表 解决hash冲突
+        //jdk1.8哈希表 + 链表O(n) + 红黑树
+        //
+        HashMap<String, String> hashMap = new HashMap<>(10);
        // hashMap.put("1","12345");
        // hashMap.put("2","dd");
        // hashMap.put("3","ces");
@@ -35,6 +66,15 @@ public class HashMap8SourceAnalyse {
         hashMap.put("BB","BB");
         hashMap.put("ABCDEa123abc","ABCDEa123abc");
         hashMap.put("ABCDFB123abc","ABCDFB123abc");
+
+        HashSet set = new HashSet();
+        set.add("ss");
+
+        TreeSet treeSet = new TreeSet();
+        treeSet.add("");
+
+        LinkedList linkedList = new LinkedList();
+        linkedList.add("");
        // hashTest();
     }
 

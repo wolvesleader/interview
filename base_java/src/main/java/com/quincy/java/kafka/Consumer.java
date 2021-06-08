@@ -45,6 +45,8 @@ public class Consumer {
         for (ConsumerRecord record: records) {
             System.out.println(record.key());
             System.out.println(record.value());
+
+            //mongodb/es
         }
     }
 

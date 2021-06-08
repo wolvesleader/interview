@@ -23,6 +23,7 @@ public class ThreadLocalDemo {
 }
 
 class ThreadLocalResource implements Runnable{
+
     private ThreadLocal<Integer> thInteger;
 
     public ThreadLocalResource(ThreadLocal<Integer> thInteger){

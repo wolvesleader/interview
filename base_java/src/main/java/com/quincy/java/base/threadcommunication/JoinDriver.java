@@ -25,6 +25,7 @@ public class JoinDriver {
         });
 
         thread1.start();
+        thread1.run();
 
         thread1.join();
 

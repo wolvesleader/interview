@@ -7,6 +7,7 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * Copyright (C), 2015-2020, 大众易书天津科技有限公司
  * FileName: FileContentZone
@@ -14,6 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * History:
  * @author quincy
  */
+
 
 public class ThreadReadTxt {
 

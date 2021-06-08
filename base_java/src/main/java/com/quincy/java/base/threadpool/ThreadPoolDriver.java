@@ -10,22 +10,20 @@ import java.util.concurrent.*;
 public class ThreadPoolDriver {
     public static void main(String[] args) throws Exception{
 
-
-        //Executors.newFixedThreadPool(10);
-
-        /*
-        int corePoolSize, 核心线程数
-        int maximumPoolSize, 最大线程数
-        long keepAliveTime,
-        TimeUnit unit,
-        BlockingQueue<Runnable> workQueue,
-        ThreadFactory threadFactory,
-        RejectedExecutionHandler handler
-
+        /**                               否
+         * 1.提交任务 -->判断是否达到核心线程数----创建线程执行任务
+         *                                是 入队列 ---- 队列满---没有达到最大线程数---创建线程执行任务
+         *                                                   -- 是--拒绝策略
+         *
+         *
+         *                                    21
+         *                                    3.01 100  3.05 1
+         *                                    1.最大线程会不会回收 会回收
+         *                                    2.核心线程会不会回收 不会回收
          */
 
         // Throwable
-        ThreadPoolExecutor executor = new ThreadPoolExecutor(2,100,1, TimeUnit.SECONDS,new LinkedBlockingQueue<Runnable>(100));
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(10,20,1, TimeUnit.SECONDS,new LinkedBlockingQueue<Runnable>(10));
         //设置该参数峰值过后会变为1线程，不设置就是corePoolSize数量
         executor.allowCoreThreadTimeOut(true);
         Future<?> submit = null;
@@ -38,6 +36,7 @@ public class ThreadPoolDriver {
 
                 @Override
                 public Integer call() throws Exception {
+
                     System.out.println("线程池中线程数目：" + executor.getPoolSize() + "，队列中等待执行的任务数目：" +
                             executor.getQueue().size() + "，已执行玩别的任务数目：" + executor.getCompletedTaskCount()
                             + ";" + executor.getActiveCount()

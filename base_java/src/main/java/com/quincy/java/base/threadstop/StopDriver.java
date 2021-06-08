@@ -8,6 +8,10 @@ package com.quincy.java.base.threadstop;
 public class StopDriver {
 
     public static void main(String[] args) {
+
+
+
+
         StopDemo ad = new StopDemo();
 
        Thread threadA = new Thread(ad);

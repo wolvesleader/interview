@@ -17,10 +17,10 @@ public class AliyunOSSClientUtil {
 
 
     public static String uploadNetworkFile(String path,String folder,String name) throws Exception {
-        OSS ossClient = new OSSClientBuilder().build(OSSClientConstants.FILEENDPOINT, OSSClientConstants.ACCESSKEYID, OSSClientConstants.ACCESSKEYSECRET);
+      /*  OSS ossClient = new OSSClientBuilder().build(OSSClientConstants.FILEENDPOINT, OSSClientConstants.ACCESSKEYID, OSSClientConstants.ACCESSKEYSECRET);
         InputStream inputStream = new URL(path).openStream();
         ossClient.putObject(OSSClientConstants.PICTUREBUCKET, folder+name, inputStream);
-        ossClient.shutdown();
+        ossClient.shutdown();*/
         return name;
     }
 
@@ -33,11 +33,12 @@ public class AliyunOSSClientUtil {
      */
     public static String uploadingFile(String folder,String name,File file){
         // 创建OSSClient实例
-        OSSClient ossClient = new OSSClient(OSSClientConstants.FILEENDPOINT, OSSClientConstants.ACCESSKEYID, OSSClientConstants.ACCESSKEYSECRET);
+       /* OSSClient ossClient = new OSSClient(OSSClientConstants.FILEENDPOINT, OSSClientConstants.ACCESSKEYID, OSSClientConstants.ACCESSKEYSECRET);
         //上传
         ossClient.putObject(OSSClientConstants.PICTUREBUCKET, folder+name, file);
         ossClient.shutdown();
-        return OSSClientConstants.PICTUREURL_PREFIX+folder+name;
+        return OSSClientConstants.PICTUREURL_PREFIX+folder+name;*/
+        return null;
     }
 
     /**
@@ -48,11 +49,11 @@ public class AliyunOSSClientUtil {
      */
     public static void downloadFile(String name,String filename) throws IOException {
         // 创建OSSClient实例
-        OSSClient ossClient = new OSSClient(OSSClientConstants.FILEENDPOINT, OSSClientConstants.ACCESSKEYID, OSSClientConstants.ACCESSKEYSECRET);
+       /* OSSClient ossClient = new OSSClient(OSSClientConstants.FILEENDPOINT, OSSClientConstants.ACCESSKEYID, OSSClientConstants.ACCESSKEYSECRET);
         // 下载object到文件
         ossClient.getObject(new GetObjectRequest(OSSClientConstants.PICTUREBUCKET, name), new File(filename));
         // 关闭client
-        ossClient.shutdown();
+        ossClient.shutdown();*/
     }
 
     /**
@@ -64,7 +65,7 @@ public class AliyunOSSClientUtil {
      */
     public static String uploadingVideo(String folder,String name,String filename) throws Throwable {
         // 创建OSSClient实例
-        OSSClient ossClient = new OSSClient(OSSClientConstants.VIDEOENDPOINT, OSSClientConstants.ACCESSKEYID, OSSClientConstants.ACCESSKEYSECRET);
+        /*OSSClient ossClient = new OSSClient(OSSClientConstants.VIDEOENDPOINT, OSSClientConstants.ACCESSKEYID, OSSClientConstants.ACCESSKEYSECRET);
         // 设置断点续传请求
         UploadFileRequest uploadFileRequest = new UploadFileRequest(OSSClientConstants.VIDEOBUCKET, folder+name);
         // 指定上传的本地文件
@@ -79,7 +80,8 @@ public class AliyunOSSClientUtil {
         ossClient.uploadFile(uploadFileRequest);
         // 关闭client
         ossClient.shutdown();
-        return OSSClientConstants.VIDEOURL_PREFIX+folder+name;
+        return OSSClientConstants.VIDEOURL_PREFIX+folder+name;*/
+        return null;
     }
 
     /**
@@ -90,7 +92,7 @@ public class AliyunOSSClientUtil {
      */
     public static void downloadVideo(String name,String filename) throws Throwable {
         // 创建OSSClient实例
-        OSSClient ossClient = new OSSClient(OSSClientConstants.VIDEOENDPOINT, OSSClientConstants.ACCESSKEYID, OSSClientConstants.ACCESSKEYSECRET);
+       /* OSSClient ossClient = new OSSClient(OSSClientConstants.VIDEOENDPOINT, OSSClientConstants.ACCESSKEYID, OSSClientConstants.ACCESSKEYSECRET);
         // 下载请求，10个任务并发下载，启动断点续传
         DownloadFileRequest downloadFileRequest = new DownloadFileRequest(OSSClientConstants.VIDEOBUCKET, name);
         downloadFileRequest.setDownloadFile(filename);
@@ -101,7 +103,7 @@ public class AliyunOSSClientUtil {
         // 下载成功时，会返回文件的元信息
         downloadRes.getObjectMetadata();
         // 关闭client
-        ossClient.shutdown();
+        ossClient.shutdown();*/
     }
 
     /**
@@ -112,7 +114,7 @@ public class AliyunOSSClientUtil {
      * @return 返回"" 图片地址url
      */
     public static String uploadFileWithStream(InputStream instream, String folder,String fileName) {
-        OSSClient ossClient = new OSSClient(OSSClientConstants.FILEENDPOINT, OSSClientConstants.ACCESSKEYID, OSSClientConstants.ACCESSKEYSECRET);
+        /*OSSClient ossClient = new OSSClient(OSSClientConstants.FILEENDPOINT, OSSClientConstants.ACCESSKEYID, OSSClientConstants.ACCESSKEYSECRET);
         try {
             //创建上传Object的Metadata
             ObjectMetadata objectMetadata = new ObjectMetadata();
@@ -136,7 +138,8 @@ public class AliyunOSSClientUtil {
                 return null;
             }
         }
-        return OSSClientConstants.PICTUREURL_PREFIX+folder+fileName;
+        return OSSClientConstants.PICTUREURL_PREFIX+folder+fileName;*/
+        return null;
     }
     /**
      * 流方式上传视频
@@ -146,7 +149,7 @@ public class AliyunOSSClientUtil {
      * @return 返回"" 视频地址url
      */
     public static String uploadVidWithStream(InputStream instream, String folder,String fileName){
-        OSSClient ossClient = new OSSClient(OSSClientConstants.VIDEOENDPOINT, OSSClientConstants.ACCESSKEYID, OSSClientConstants.ACCESSKEYSECRET);
+        /*OSSClient ossClient = new OSSClient(OSSClientConstants.VIDEOENDPOINT, OSSClientConstants.ACCESSKEYID, OSSClientConstants.ACCESSKEYSECRET);
         try {
             //创建上传Object的Metadata
             ObjectMetadata objectMetadata = new ObjectMetadata();
@@ -170,7 +173,8 @@ public class AliyunOSSClientUtil {
                 return null;
             }
         }
-        return OSSClientConstants.VIDEOURL_PREFIX+folder+fileName;
+        return OSSClientConstants.VIDEOURL_PREFIX+folder+fileName;*/
+        return null;
     }
 
     /**

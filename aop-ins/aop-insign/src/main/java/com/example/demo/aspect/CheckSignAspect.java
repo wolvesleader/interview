@@ -9,8 +9,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.StringRedisTemplate;
+
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -31,7 +30,7 @@ public class CheckSignAspect {
     private HttpServletRequest request;
 
     @Autowired
-    StringRedisTemplate stringRedisTemplate;
+    //StringRedisTemplate stringRedisTemplate;
 
 
     @Pointcut("@annotation(com.example.demo.utils.Sign)")
@@ -63,7 +62,7 @@ public class CheckSignAspect {
         }
 
         //校验请求是否重复
-        boolean signCheck = stringRedisTemplate.opsForHash().hasKey("sign_check", "sign_check" + nonce);
+        /*boolean signCheck = stringRedisTemplate.opsForHash().hasKey("sign_check", "sign_check" + nonce);
         if (signCheck) {
             return "请不要发送重复的请求";
         } else {
@@ -71,7 +70,7 @@ public class CheckSignAspect {
             HashOperations<String, Object, Object> stringObjectObjectHashOperations = stringRedisTemplate.opsForHash();
             stringObjectObjectHashOperations.put("sign_check", "sign_check" + nonce, nonce);
             stringRedisTemplate.expire("sign_check",time, TimeUnit.SECONDS);
-        }
+        }*/
 
 
 

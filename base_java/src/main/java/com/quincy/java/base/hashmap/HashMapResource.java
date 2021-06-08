@@ -23,7 +23,6 @@ public class HashMapResource implements Runnable {
     }
 
     public void put(String key,Object value){
-
             map.put(key, value);
 
     }

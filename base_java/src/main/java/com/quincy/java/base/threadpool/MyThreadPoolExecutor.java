@@ -32,6 +32,8 @@ public class MyThreadPoolExecutor {
 
     public MyThreadPoolExecutor(int coreSize,int maxPoolSize){
 
+
+
         this.initSize = new AtomicInteger(coreSize);
         System.out.println(this.coreSize.get());
         this.maxPoolSize = new AtomicInteger(maxPoolSize);

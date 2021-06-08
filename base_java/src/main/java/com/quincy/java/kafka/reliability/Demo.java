@@ -7,7 +7,7 @@ package com.quincy.java.kafka.reliability;
  * @author: quincy
  * Date: 2020/12/26 下午4:26
  * History:
- *
+ *                      master  slave1，slave2 slave3
  * ——————————————      ——————————————————————           ————————————
  * |            |      |      消息服务       |           |           |
  * |            |——————|         |         |           |           |

@@ -1,9 +1,7 @@
 package com.quincy.java.kafka;
 
 import com.alibaba.fastjson.JSONObject;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.*;
 import org.junit.Test;
 
 import java.util.Properties;
@@ -30,6 +28,13 @@ public class Producer {
         KafkaProducer kafkaProducer = new KafkaProducer(properties);
         //2个分区，相当于存在2个队列
         ProducerRecord producerRecord = new ProducerRecord("kafka_info",2,"ererer","miao");
+        kafkaProducer.send(producerRecord, new Callback() {
+            @Override
+            public void onCompletion(RecordMetadata metadata, Exception exception) {
+
+
+            }
+        });
         kafkaProducer.send(producerRecord);
         kafkaProducer.close();
     }
