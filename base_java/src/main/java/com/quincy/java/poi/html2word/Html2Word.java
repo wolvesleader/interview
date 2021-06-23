@@ -2,6 +2,7 @@ package com.quincy.java.poi.html2word;
 
 import com.aspose.words.Document;
 import com.aspose.words.SaveFormat;
+import com.aspose.words.SaveOutputParameters;
 
 import java.io.File;
 import java.net.URL;
@@ -30,7 +31,9 @@ public class Html2Word {
             File file = new File(path,"宙斯开发者中心.html");
             Document document = new Document(file.getPath());
 
-            document.save(path + "/宙斯开发者中心.docx" , SaveFormat.DOCX);
+            SaveOutputParameters save = document.save(path + "/宙斯开发者中心.docx", SaveFormat.DOCX);
+
+
 
             System.out.println(path);
         } catch (Exception e) {
